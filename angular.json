@@ -134,6 +134,41 @@
           }
         }
       }
+    },
+    "question-editor-library": {
+      "root": "projects/question-editor-library",
+      "sourceRoot": "projects/question-editor-library/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/question-editor-library/tsconfig.lib.json",
+            "project": "projects/question-editor-library/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/question-editor-library/src/test.ts",
+            "tsConfig": "projects/question-editor-library/tsconfig.spec.json",
+            "karmaConfig": "projects/question-editor-library/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/question-editor-library/tsconfig.lib.json",
+              "projects/question-editor-library/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "sunbird-questionset-editor"

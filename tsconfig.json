@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "question-editor-library": [
+        "dist/question-editor-library"
+      ],
+      "question-editor-library/*": [
+        "dist/question-editor-library/*"
+      ]
+    }
   }
 }
