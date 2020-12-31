@@ -1,3 +1,5 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { QuestionEditorLibraryComponent } from './question-editor-library.component';
 import { EditorComponent } from './editor/editor.component';
@@ -9,10 +11,14 @@ import { OptionsComponent } from './options/options.component';
 import { QuestionSetComponent } from './question-set/question-set.component';
 import { PlayerComponent } from './player/player.component';
 import { TemplateComponent } from './template/template.component';
+import { CommonFormElementsModule } from 'v-dynamic-forms';
+import { SuiModalModule} from 'ng2-semantic-ui';
 
 @NgModule({
-  declarations: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent, HeaderComponent, TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent],
+  declarations: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent, HeaderComponent,
+  TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent],
   imports: [
+    CommonModule, FormsModule, CommonFormElementsModule, SuiModalModule
   ],
   exports: [QuestionEditorLibraryComponent, EditorComponent]
 })

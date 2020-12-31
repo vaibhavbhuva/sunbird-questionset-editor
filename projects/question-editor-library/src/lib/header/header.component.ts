@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'lib-header',
@@ -6,10 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  @Input() toolbarConfig: any;
+  @Input() telemetryEventsInput: any;
+  @Output() toolbarEmitter = new EventEmitter<any>();
+  public preview = false;
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  buttonEmitter(event, button) {
+    this.toolbarEmitter.emit({ event, button });
   }
 
 }

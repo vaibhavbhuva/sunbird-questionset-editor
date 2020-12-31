@@ -3,6 +3,12 @@
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^7.2.0",
-    "@angular/core": "^7.2.0"
+    "@angular/core": "^7.2.0",
+    "lodash-es": "^4.17.20",
+    "angular2-uuid": "^1.1.1",
+    "ng2-semantic-ui": "github:project-sunbird/ng2-semantic-ui"
+  },
+  "dependencies": {
+    "v-dynamic-forms": "0.0.1-beta.9"
   }
 }

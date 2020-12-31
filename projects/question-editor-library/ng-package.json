@@ -3,5 +3,8 @@
   "dest": "../../dist/question-editor-library",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": [
+    "v-dynamic-forms"
+  ]
 }
