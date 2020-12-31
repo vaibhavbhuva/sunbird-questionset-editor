@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import * as _ from 'lodash-es';
 import { map } from 'rxjs/operators';
-import { TreeService } from '../tree/tree.service';
-import { collectionTreeNodes } from '../../editor.config';
+import { TreeService, DataService } from '../../services';
 
 @Injectable({
   providedIn: 'root'
@@ -11,45 +10,42 @@ import { collectionTreeNodes } from '../../editor.config';
 export class EditorService {
   data: any;
   public questionStream$ = new Subject<any>();
-  constructor(public treeService: TreeService) { }
 
+  constructor(public treeService: TreeService, private dataService: DataService) { }
 
   public getQuestionSetHierarchy(identifier: string) {
-    // const req = {
-    //   url: `${this.configService.urlConFig.URLS.QUESTION_SET.READ_HIERARCHY}/${identifier}`,
-    //   param: { mode: 'edit' }
-    // };
-    // return this.publicDataService.get(req).pipe(map((res: any) => _.get(res, 'result.questionSet')));
-    return of(collectionTreeNodes);
+    const req = {
+      url: `questionset/v1/hierarchy/${identifier}`,
+      param: { mode: 'edit' }
+    };
+    return this.dataService.get(req).pipe(map((res: any) => _.get(res, 'result.questionSet')));
   }
 
   public updateQuestionSetHierarchy(): Observable<any> {
-    // const req = {
-    //   url: this.configService.urlConFig.URLS.QUESTION_SET.UPDATE_HIERARCHY,
-    //   data: {
-    //     request: {
-    //       data: {
-    //         ...this.prepareQuestionSetHierarchy(),
-    //         ...{lastUpdatedBy: this.userService.userProfile.userId}
-    //       }
-    //     }
-    //   }
-    // };
-    // return this.publicDataService.patch(req);
-    return of({});
+    const req = {
+      url: 'questionset/v1/hierarchy/update',
+      data: {
+        request: {
+          data: {
+            ...this.prepareQuestionSetHierarchy(),
+            ...{lastUpdatedBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448'}
+          }
+        }
+      }
+    };
+    return this.dataService.patch(req);
   }
 
   public sendQuestionSetForReview(identifier: string): Observable<any> {
-    // const req = {
-    //   url: `${this.configService.urlConFig.URLS.QUESTION_SET.REVIEW}/${identifier}`,
-    //   data: {
-    //     request : {
-    //         questionSet: {}
-    //     }
-    // }
-    // };
-    // return this.publicDataService.post(req);
-    return of({});
+    const req = {
+      url: `questionset/v1/review/${identifier}`,
+      data: {
+        request : {
+            questionSet: {}
+        }
+    }
+    };
+    return this.dataService.post(req);
   }
 
   public getQuestionStream$() {

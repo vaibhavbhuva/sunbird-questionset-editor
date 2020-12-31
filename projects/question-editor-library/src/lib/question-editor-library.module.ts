@@ -13,12 +13,13 @@ import { PlayerComponent } from './player/player.component';
 import { TemplateComponent } from './template/template.component';
 import { CommonFormElementsModule } from 'v-dynamic-forms';
 import { SuiModalModule} from 'ng2-semantic-ui';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent, HeaderComponent,
   TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent],
   imports: [
-    CommonModule, FormsModule, CommonFormElementsModule, SuiModalModule
+    CommonModule, FormsModule, CommonFormElementsModule, SuiModalModule, HttpClientModule
   ],
   exports: [QuestionEditorLibraryComponent, EditorComponent]
 })
