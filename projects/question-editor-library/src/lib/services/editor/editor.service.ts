@@ -14,16 +14,17 @@ export class EditorService {
   constructor(public treeService: TreeService, private dataService: DataService) { }
 
   public getQuestionSetHierarchy(identifier: string) {
+    console.log('getQuestionSetHierarchy ');
     const req = {
-      url: `questionset/v1/hierarchy/${identifier}`,
-      param: { mode: 'edit' }
+      url: `api/questionset/v1/hierarchy/${identifier}`,
+      param: { mode: 'edit'}
     };
     return this.dataService.get(req).pipe(map((res: any) => _.get(res, 'result.questionSet')));
   }
 
   public updateQuestionSetHierarchy(): Observable<any> {
     const req = {
-      url: 'questionset/v1/hierarchy/update',
+      url: 'api/questionset/v1/hierarchy/update',
       data: {
         request: {
           data: {

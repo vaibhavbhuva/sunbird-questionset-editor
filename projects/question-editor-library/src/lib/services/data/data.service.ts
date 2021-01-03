@@ -60,7 +60,7 @@ export class DataService {
       observe: 'response'
     };
 
-    return this.http.get(this.baseUrl + requestParam.url, httpOptions).pipe(
+    return this.http.get('this.baseUrl' + requestParam.url, httpOptions).pipe(
       mergeMap(({body, headers}: any) => {
         // replace ts time with header date , this value is used in telemetry
         body.ts =  this.getDateDiff((headers.get('Date')));
@@ -82,7 +82,7 @@ export class DataService {
       params: requestParam.param
     };
 
-    return this.http.get(this.baseUrl + requestParam.url, httpOptions).pipe(
+    return this.http.get('http://localhost:4200/' + requestParam.url, httpOptions).pipe(
       mergeMap((data: ServerResponse) => {
         if (data.responseCode !== 'OK') {
           return observableThrowError(data);
