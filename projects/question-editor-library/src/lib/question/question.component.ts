@@ -57,8 +57,8 @@ export class QuestionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.questionInteractionType = 'default';
-    this.questionId = 'do_113187145806135296154';
+    this.questionInteractionType = 'choice';
+    this.questionId = 'do_11318790724225433616';
     this.questionSetId = 'do_113187143974723584150';
     if (this.questionInteractionType === 'default') {
       this.toolbarConfig.title = 'Subjective';
@@ -82,16 +82,16 @@ export class QuestionComponent implements OnInit {
 
           if (this.questionInteractionType === 'default') {
             if ( this.questionMetaData.editorState) {
-              this.editorState = JSON.parse(this.questionMetaData.editorState);
+              this.editorState = this.questionMetaData.editorState;
             } else {
               this.editorState = this.questionMetaData;
               this.editorState.question = this.questionMetaData.body;
             }
           }
           if (this.questionInteractionType === 'choice') {
-            const responseDeclaration = JSON.parse(this.questionMetaData.responseDeclaration);
+            const responseDeclaration = this.questionMetaData.responseDeclaration;
             const templateId = this.questionMetaData.templateId;
-            this.questionMetaData.editorState = JSON.parse(this.questionMetaData.editorState);
+            this.questionMetaData.editorState = this.questionMetaData.editorState;
             const numberOfOptions = this.questionMetaData.editorState.options.length;
             const options = _.map(this.questionMetaData.editorState.options, option => ({ body: option.value.body }));
             const question = this.questionMetaData.editorState.question;
@@ -182,7 +182,7 @@ export class QuestionComponent implements OnInit {
     this.router.navigateByUrl(`create/questionSet/${this.questionSetId}`);
   }
 
-  editorDataHandler(event, type) {
+  editorDataHandler(event, type?) {
     if (type === 'question') {
       this.editorState.question = event.body;
     } else if (type === 'answer') {
@@ -288,13 +288,13 @@ export class QuestionComponent implements OnInit {
         body: rendererBody,
         answer: rendererAnswer,
         templateId: '',
-        responseDeclaration: JSON.stringify({}),
+        responseDeclaration: {},
         // 'interactionTypes': [],
-        interactions: JSON.stringify({}),
-        editorState: JSON.stringify({
+        interactions: {},
+        editorState: {
           question: editorState.question,
           answer: editorState.answer
-        }),
+        },
         status: 'Draft',
         name: 'SA',
         qType: 'SA',
@@ -337,13 +337,13 @@ export class QuestionComponent implements OnInit {
           templateId: ' mcq-vertical',
           name: 'MCQ', // hardcoded value need to change it later
           body: questionData.body,
-          responseDeclaration: JSON.stringify(questionData.responseDeclaration),
+          responseDeclaration: questionData.responseDeclaration,
           interactionTypes: ['choice'],
-          interactions : JSON.stringify(this.getInteractions(editorState.options)),
-          editorState : JSON.stringify({
+          interactions : this.getInteractions(editorState.options),
+          editorState : {
             question: editorState.question,
             options
-          }),
+          },
           status: 'Draft',
           media: this.mediaArr,
           qType: 'MCQ',

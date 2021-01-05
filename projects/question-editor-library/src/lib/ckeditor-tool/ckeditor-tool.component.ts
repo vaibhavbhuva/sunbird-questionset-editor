@@ -1,12 +1,12 @@
 import { Component, OnInit, AfterViewInit, Output, Input, EventEmitter, OnChanges, ViewChild, ElementRef } from '@angular/core';
-import * as ClassicEditor from '@project-sunbird/ckeditor-build-font';
+import ClassicEditor from '@project-sunbird/ckeditor-build-font';
 import { FineUploader } from 'fine-uploader';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash-es';
 import { catchError, map} from 'rxjs/operators';
 import { throwError, Observable} from 'rxjs';
 // import { CbseProgramService } from '../../services';
-// import MathText from '../../../../../assets/libs/mathEquation/plugin/mathTextPlugin.js';
+import MathText from '../../../../../src/assets/libs/mathEquation/plugin/mathTextPlugin.js';
 // import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 
@@ -273,7 +273,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
 
   initializeEditors() {
     ClassicEditor.create(this.editorRef.nativeElement, {
-      extraPlugins: ['Font'], // TODO: MathText, this.customImageResizer
+      extraPlugins: ['Font', MathText], // TODO: MathText, this.customImageResizer
       toolbar: this.editorConfig.toolbar,
       fontSize: this.editorConfig.fontSize,
       image: this.editorConfig.image,

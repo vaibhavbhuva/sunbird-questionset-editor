@@ -1,19 +1,18 @@
 <div class="editorWrapper" [ngClass]="{'hasError': limitExceeded}">
-  <button type="button" data-tooltip="Add image" data-position="bottom center" data-variation="mini" data-inverted=""
+  <!-- <button type="button" data-tooltip="Add image" data-position="bottom center" data-variation="mini" data-inverted=""
     title="Add image" [disabled]="isAssetBrowserReadOnly || isEditorFocused" (click)="initializeImagePicker('question')"
     class="ui icon button insert-image-btn">
     <i class="image outline icon"></i>
-  </button>
+  </button> -->
   <textarea class="editor" #editor name="question" placeholder=""></textarea>
   <div *ngIf="setCharacterLimit > 0">
     <div class="characterCount">
-      <!-- <i class="icon help"></i> -->
       Characters left: {{setCharacterLimit - characterCount}}
     </div>
   </div>
 </div>
 
-<sui-modal [isClosable]="true" class="sb-modal" [isInverted]="true" (dismissed)="dismissImagePicker()"
+<!-- <sui-modal [isClosable]="true" class="sb-modal" [isInverted]="true" (dismissed)="dismissImagePicker()"
   *ngIf="showImagePicker" [size]="'normal'" [isFullScreen]="false" [mustScroll]="true" #modal>
   <div class="sb-modal-header">Select Image</div>
   <div class="sb-modal-content p-0">
@@ -40,7 +39,6 @@
                 Upload from Computer
                 <input (change)="uploadImage($event)" type="file" [accept]="acceptImageType" name="assetfile">
               </button>
-              <!-- <p class="fsmall my-">Drag and Drop files here</p> -->
               <span class="fsmall mt-16">Upload {{assetConfig.image.accepted}} (Max File size:
                 {{assetConfig.image.size}}MB)</span>
               <div *ngIf="showErrorMsg" class="sb-color-error fsmall mt-8">
@@ -62,8 +60,6 @@
         <div class="sb-grid-layout image">
           <div class="sb-video-content" *ngFor="let data of myAssets">
             <div class="sb-image-section relative position">
-              <!-- Overlay play icon should be integrated for video -->
-              <!-- <div class="overlay-image"><i class="play circle icon"></i></div> -->
               <img (click)="addImageInEditor(data.downloadUrl, data.identifier)" [src]="data.downloadUrl">
             </div>
           </div>
@@ -91,8 +87,6 @@
   </div>
 </sui-modal>
 
-
-<!--Video POP UP-->
 <sui-modal [isClosable]="isClosable" class="sb-modal" [isInverted]="true" (dismissed)="dismissVideoPicker()"
   *ngIf="showVideoPicker" [size]="'normal'" [isFullScreen]="false" [mustScroll]="true" #modal>
   <div class="sb-modal-header">Select Video</div>
@@ -262,4 +256,4 @@
       <button (click)="dismissImageUploadModal();" class="ui button">Cancel</button>
     </div>
   </div>
-</sui-modal>
+</sui-modal> -->
