@@ -33,7 +33,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() { }
 
   fetchQuestionSetHierarchy() {
-    this.editorService.getQuestionSetHierarchy('do_113170109787922432162').pipe(catchError(error => {
+    this.editorService.getQuestionSetHierarchy('do_113187143974723584150').pipe(catchError(error => {
       const errInfo = {
         errorMsg: 'Fetching question set details failed. Please try again...',
       };
@@ -90,7 +90,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   submitCollection() {
-    this.editorService.sendQuestionSetForReview('do_113170109787922432162').pipe(catchError(error => {
+    this.editorService.sendQuestionSetForReview('do_113187143974723584150').pipe(catchError(error => {
       const errInfo = {
         errorMsg: 'Sending question set for review failed. Please try again...',
       };

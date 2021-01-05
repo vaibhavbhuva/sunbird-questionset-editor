@@ -16,7 +16,7 @@ export class EditorService {
   public getQuestionSetHierarchy(identifier: string) {
     console.log('getQuestionSetHierarchy ');
     const req = {
-      url: `api/questionset/v1/hierarchy/${identifier}`,
+      url: `questionset/v1/hierarchy/${identifier}`,
       param: { mode: 'edit'}
     };
     return this.dataService.get(req).pipe(map((res: any) => _.get(res, 'result.questionSet')));
@@ -24,7 +24,7 @@ export class EditorService {
 
   public updateQuestionSetHierarchy(): Observable<any> {
     const req = {
-      url: 'api/questionset/v1/hierarchy/update',
+      url: 'questionset/v1/hierarchy/update',
       data: {
         request: {
           data: {
