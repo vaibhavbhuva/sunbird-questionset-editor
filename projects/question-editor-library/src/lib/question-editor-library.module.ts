@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
+import { CommonFormElementsModule } from 'v-dynamic-forms';
+import { SuiModule } from 'ng2-semantic-ui/dist';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { HttpClientModule } from '@angular/common/http';
 import { QuestionEditorLibraryComponent } from './question-editor-library.component';
 import { EditorComponent } from './editor/editor.component';
 import { QuestionComponent } from './question/question.component';
@@ -11,16 +16,16 @@ import { OptionsComponent } from './options/options.component';
 import { QuestionSetComponent } from './question-set/question-set.component';
 import { PlayerComponent } from './player/player.component';
 import { TemplateComponent } from './template/template.component';
-import { CommonFormElementsModule } from 'v-dynamic-forms';
-import { SuiModalModule} from 'ng2-semantic-ui';
-import { HttpClientModule } from '@angular/common/http';
+import {CkeditorToolComponent} from './ckeditor-tool/ckeditor-tool.component';
+
 
 @NgModule({
   declarations: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent, HeaderComponent,
-  TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent],
+  TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent],
   imports: [
-    CommonModule, FormsModule, CommonFormElementsModule, SuiModalModule, HttpClientModule
+    CommonModule, FormsModule, RouterModule.forRoot([]), CommonFormElementsModule, InfiniteScrollModule,
+    HttpClientModule, SuiModule
   ],
-  exports: [QuestionEditorLibraryComponent, EditorComponent]
+  exports: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent]
 })
 export class QuestionEditorLibraryModule { }

@@ -1,57 +1,79 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DataService } from '../../services';
+import { ServerResponse } from '../../interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionService {
 
-  constructor() { }
+  constructor(public dataService: DataService) { }
 
-  // createQuestion(questionMedataData): Observable<ServerResponse> {
-  //   const option = {
-  //     url: `${this.configService.urlConFig.URLS.QUESTION.CREATE}`,
-  //     'data': {
-  //       'request': {
-  //        'question': questionMedataData
-  //       }
-  //     }
-  //     };
-  //     return this.publicDataService.post(option);
-  // }
+  readQuestion(questionId) {
+    const filters = '?fields=body,answer,templateId,responseDeclaration,interactionTypes,interactions,name,solutions,editorState,media';
+    const option = {
+      url: `question/v1/read/${questionId}${filters}`,
+    };
+    return this.dataService.get(option);
+  }
 
-  // addQuestionToQuestionSet(questionSetId, questionId): Observable<ServerResponse> {
-  //   const option = {
-  //     url: `${this.configService.urlConFig.URLS.QUESTION_SET.ADD}`,
-  //     'data': {
-  //       'request': {
-  //         'questionSet' : {
-  //           'rootId': questionSetId,
-  //           'children' : [questionId]
-  //            }
-  //         }
-  //       }
-  //     };
-  //     return this.publicDataService.patch(option);
-  // }
+  updateHierarchyQuestionCreate(questionSetId, metadata, questionSetHierarchy): Observable<ServerResponse> {
+    let hierarchyChildren: Array<string>;
+    hierarchyChildren = questionSetHierarchy.childNodes;
+    hierarchyChildren.push('UUID');
+    const requestObj = {
+      data: {
+          nodesModified: {
+              UUID: {
+                  metadata,
+                  objectType: 'Question',
+                  root: false,
+                  isNew: true
+              }
+          },
+          hierarchy: {
+          }
+      }
+    };
+    requestObj.data.hierarchy[questionSetId] = {
+      children: hierarchyChildren,
+      root: true
+    };
+    const req = {
+      url: 'questionset/v1/hierarchy/update',
+      data: {
+        request: requestObj
+      }
+    };
+    return this.dataService.patch(req);
+  }
 
-  // readQuestion(questionId) {
-  //   const filters = '?fields=body,answer,templateId,responseDeclaration,interactionTypes,interactions,name,solutions,editorState,media';
-  //   const option = {
-  //     url: `${this.configService.urlConFig.URLS.QUESTION.READ}/${questionId}${filters}`,
-  //   };
-  //   return this.publicDataService.get(option);
-  // }
-
-  // updateQuestion(questionMedataData, questionId): Observable<ServerResponse> {
-  //   const option = {
-  //     url: `${this.configService.urlConFig.URLS.QUESTION.UPDATE}/${questionId}`,
-  //     'data': {
-  //       'request': {
-  //        'question': questionMedataData
-  //       }
-  //     }
-  //     };
-  //     return this.publicDataService.patch(option);
-  // }
+  updateHierarchyQuestionUpdate(questionSetId, questionId, metadata, questionSetHierarchy): Observable<ServerResponse> {
+    const requestObj = {
+      data: {
+          nodesModified: {
+          },
+          hierarchy: {
+          }
+      }
+    };
+    requestObj.data.hierarchy[questionSetId] = {
+      children: questionSetHierarchy.childNodes,
+      root: true
+    };
+    requestObj.data.nodesModified[questionId] = {
+      metadata,
+      objectType: 'Question',
+      root: false,
+      isNew: false
+    };
+    const req = {
+      url: 'questionset/v1/hierarchy/update',
+      data: {
+        request: requestObj
+      }
+    };
+    return this.dataService.patch(req);
+  }
 }

@@ -152,6 +152,11 @@
           "options": {
             "tsConfig": "projects/question-editor-library/tsconfig.lib.json",
             "project": "projects/question-editor-library/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/question-editor-library/ng-package.prod.json"
+            }
           }
         },
         "test": {
