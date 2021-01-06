@@ -57,8 +57,8 @@ export class QuestionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.questionInteractionType = 'choice';
-    this.questionId = 'do_11318790724225433616';
+    this.questionInteractionType = 'default';
+    // this.questionId = 'do_11318800070280806413';
     this.questionSetId = 'do_113187143974723584150';
     if (this.questionInteractionType === 'default') {
       this.toolbarConfig.title = 'Subjective';

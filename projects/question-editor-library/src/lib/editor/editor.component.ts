@@ -5,6 +5,7 @@ import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
 import { templateList, toolbarConfig } from '../editor.config';
 import { EditorService, TreeService } from '../services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'lib-editor',
@@ -22,10 +23,13 @@ export class EditorComponent implements OnInit, AfterViewInit {
   public showConfirmPopup = false;
   public submitFormStatus = false;
   public terms = false;
+  public collectionId;
 
-  constructor(private editorService: EditorService, private treeService: TreeService) { }
+  constructor(private editorService: EditorService, private treeService: TreeService,
+              private router: Router) { }
 
   ngOnInit() {
+    this.collectionId = 'do_113187143974723584150';
     console.log('QuestionSet config', this.editorConfig);
     this.fetchQuestionSetHierarchy();
   }
@@ -33,7 +37,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() { }
 
   fetchQuestionSetHierarchy() {
-    this.editorService.getQuestionSetHierarchy('do_113187143974723584150').pipe(catchError(error => {
+    this.editorService.getQuestionSetHierarchy(this.collectionId).pipe(catchError(error => {
       const errInfo = {
         errorMsg: 'Fetching question set details failed. Please try again...',
       };
@@ -90,7 +94,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   submitCollection() {
-    this.editorService.sendQuestionSetForReview('do_113187143974723584150').pipe(catchError(error => {
+    this.editorService.sendQuestionSetForReview(this.collectionId).pipe(catchError(error => {
       const errInfo = {
         errorMsg: 'Sending question set for review failed. Please try again...',
       };
@@ -133,17 +137,25 @@ export class EditorComponent implements OnInit, AfterViewInit {
     // }, (err) => {
     //   this.toasterService.error(this.resourceService.messages.emsg.m0027);
     // });
-    this.redirectToQuestionTab('default');
+    this.redirectToQuestionTab(selectedQuestionType);
   }
 
   redirectToQuestionTab(type?) {
-    // let questionId;
-    // if (!type) {
-    //   type = this.selectedQuestionData.data.metadata.interactionTypes || 'default';
-    //   questionId = this.selectedQuestionData.data.metadata.identifier;
-    // }
-    // let queryParams = `?type=${type}`;
-    // if (questionId) { queryParams += `&questionId=${questionId}`; }
-    // this.router.navigateByUrl(`/create/questionSet/${this.editorParams.collectionId}/question${queryParams}`);
+    let questionId;
+    if (!type) {
+      type = this.selectedQuestionData.data.metadata.interactionTypes || 'default';
+      questionId = this.selectedQuestionData.data.metadata.identifier;
+    }
+    if (type) {
+      if (type === 'MCQ') {
+        type = 'choice';
+      }
+      if (type === 'Subjective') {
+        type = 'default';
+      }
+    }
+    let queryParams = `?type=${type}`;
+    if (questionId) { queryParams += `&questionId=${questionId}`; }
+    this.router.navigateByUrl(`/create/questionSet/${this.collectionId}/question${queryParams}`);
   }
 }

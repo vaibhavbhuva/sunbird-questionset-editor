@@ -1,4 +1,4 @@
-<div class="add-to-library mb-30">
+<div class="add-to-library mb-30" *ngIf="!showLoader">
   <lib-header [toolbarConfig]="toolbarConfig" (toolbarEmitter)="toolbarEventListener($event)">
   </lib-header>
   <div class="min-h-500 sb-bg-white py-20">
