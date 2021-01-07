@@ -12,7 +12,7 @@
                 <div class="sb-field">
                   <div class="ckeditor-tool__question mb-5">
                     <lib-ckeditor-tool [editorConfig]="ckeditorConfig"
-                      (editorDataOutput)="editorDataHandler($event, 'question'); getMedia($event.mediaobj);"
+                      (editorDataOutput)="editorDataHandler($event, 'question');"
                       [editorDataInput]="editorState.question" [editorId]="'question_editor'"
                       (videoDataOutput)="videoDataOutput($event)" [videoShow]="videoShow"></lib-ckeditor-tool>
                   </div>
@@ -22,11 +22,11 @@
 
                 <lib-answer *ngIf="(questionInteractionType === 'default')" [editorConfig]="ckeditorConfig"
                   [editorState]="editorState" [showFormError]="showFormError"
-                  (editorDataOutput)="editorDataHandler($event, 'answer')"></lib-answer>
+                  (editorDataOutput)="editorDataHandler($event)"></lib-answer>
 
                 <lib-options *ngIf="(questionInteractionType === 'choice')" [editorConfig]="ckeditorConfig"
                   [editorState]="editorState" [showFormError]="showFormError" [questionMetaData]="questionMetaData"
-                  (editorDataOutput)="editorDataHandler($event)" (optionMedia)="getMedia($event)"></lib-options>
+                  (editorDataOutput)="editorDataHandler($event)"></lib-options>
 
                 <div class="d-flex flex-ai-center ckeditor-tool__solution py-10 px-16 mt-15 sb-bg-color-white">
                   <label class="fs-0-92 mb-0 ckeditor-tool__label pb-4">
@@ -84,3 +84,20 @@
     </div>
   </div>
 </div>
+
+<sui-modal *ngIf="showConfirmPopup" [mustScroll]="true" [isClosable]="true" [transitionDuration]="0" [size]="'small'"
+  class="sb-modal " appBodyScroll (dismissed)="showConfirmPopup = !showConfirmPopup" #modal>
+  <div class="sb-modal-header">
+  </div>
+  <div class="sb-modal-content">
+    This question will not be saved, are you sure you want to go back to questionset?
+  </div>
+  <div class="sb-modal-actions">
+    <button class="sb-btn sb-btn-normal sb-btn-primary" (click)="redirectToQuestionset()">
+      Yes
+    </button>
+    <button class="sb-btn sb-btn-normal sb-btn-outline-primary" (click)="showConfirmPopup = !showConfirmPopup">
+      No
+    </button>
+  </div>
+</sui-modal>

@@ -57,6 +57,13 @@ export const templateList = [
     { type : 'Subjective'}
 ];
 
+export const McqQuestionTemplate = [
+  {templateType: 'mcq-vertical', class: 'q-sb-layout-single mr-10 h-7'},
+  {templateType: 'mcq-horizontal', class: 'q-sb-layout-two mr-10 h-7'},
+  {templateType: 'mcq-grid-split', class: 'q-sb-layout-three mr-10 h-7 w-20'}
+];
+
+
 export const editorConfig = {
     nodeDisplayCriteria: {
       contentType: ['QuestionSet', 'Question']
