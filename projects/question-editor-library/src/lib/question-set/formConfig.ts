@@ -5,8 +5,8 @@ export const formConfig = [
         description: 'Name of the content',
         editable: true,
         inputType: 'text',
-        label: 'Name',
-        name: 'Name',
+        label: 'Title',
+        name: 'Title',
         placeholder: 'Name',
         renderingHints: {class: 'sb-g-col-lg-1'},
         required: true,
@@ -20,6 +20,160 @@ export const formConfig = [
             message: 'Name is required'
         }]
     },
+    {
+        code: 'description',
+        dataType: 'text',
+        description: 'Brief description',
+        editable: true,
+        inputType: 'textarea',
+        label: 'Description',
+        name: 'Description',
+        placeholder: 'Description',
+        renderingHints: {},
+        required: false,
+        visible: true,
+        validations: [{
+          type: 'max',
+          value: '1000',
+          message: 'Description is Exceeded'
+        },
+        {
+          type: 'required',
+          message: 'Description is required'
+        }]
+      },
+    //   {
+    //     code: 'board',
+    //     dataType: 'text',
+    //     description: 'Board',
+    //     editable: true,
+    //     index: 2,
+    //     inputType: 'select',
+    //     label: 'Board/Syllabus',
+    //     name: 'Board/Syllabus',
+    //     placeholder: 'Select Board/Syllabus',
+    //     renderingHints: {},
+    //     required: true,
+    //     visible: true,
+    //     type: 'select',
+    //     templateOptions: {
+    //       placeHolder: 'Select Board',
+    //       multiple: false,
+    //       hidden: false,
+    //     },
+    //     validations: [{
+    //       type: 'required',
+    //       message: 'Board is required'
+    //     }],
+    //     identifier: 'ekstep_ncert_k-12_board',
+    //     translations: null,
+    //     status: 'Live'
+    //   },
+    //   {
+    //     code: 'medium',
+    //     dataType: 'list',
+    //     description: '',
+    //     editable: true,
+    //     index: 3,
+    //     depends: [
+    //         'board'
+    //     ],
+    //     inputType: 'select',
+    //     label: 'medium',
+    //     name: 'medium',
+    //     placeholder: 'Select Medium',
+    //     renderingHints: {},
+    //     required: true,
+    //     visible: true,
+    //     identifier: 'ekstep_ncert_k-12_medium',
+    //     translations: null,
+    //     association: true,
+    //     status: 'Live',
+    //     type: 'select',
+    //     templateOptions: {
+    //       placeHolder: 'Select Category',
+    //       multiple: false,
+    //     },
+    //     validations: [{
+    //       type: 'required',
+    //       message: 'Medium is required'
+    //     }]
+    //   },
+    //   {
+    //     code: 'gradeLevel',
+    //     dataType: 'list',
+    //     description: 'Class',
+    //     editable: false,
+    //     index: 4,
+    //     depends: [
+    //         'medium',
+    //         'board'
+    //     ],
+    //     inputType: 'select',
+    //     label: 'Class',
+    //     name: 'Class',
+    //     placeholder: 'Select Class',
+    //     renderingHints: {},
+    //     required: true,
+    //     visible: true,
+    //     identifier: 'ekstep_ncert_k-12_gradelevel',
+    //     default: ['ekstep_ncert_k-12_gradelevel_class1', 'ekstep_ncert_k-12_gradelevel_class2'],
+    //     translations: null,
+    //     status: 'Live',
+    //     association: true,
+    //     validation: [{
+    //       type: 'max',
+    //       message: 'Input is Exceeded',
+    //       value: '1000'
+    //     }]
+    //   },
+      {
+        code: 'primaryCategory',
+        dataType: 'text',
+        description: 'Collection Type',
+        editable: false,
+        index: 0,
+        inputType: 'select',
+        label: 'Collection Type',
+        name: 'Collection Type',
+        placeholder: '',
+        required: true,
+        visible: true,
+      },
+      {
+        code: 'additionalCategories',
+        dataType: 'text',
+        depends: [
+          'primaryCategory', 'channel'
+        ],
+        default: ['Classroom Teaching Video',
+        'Concept Map'],
+        description: 'Additonal Category of the Content',
+        editable: true,
+        index: 5,
+        inputType: 'nestedselect',
+        label: 'Additional Category',
+        name: 'Additional Category',
+        placeholder: 'Select Additional Category',
+        renderingHints: {
+
+        },
+        range: ['Classroom Teaching Video',
+        'Concept Map',
+        'Curiosity Question Set',
+        'Experiential Resource',
+        'Explanation Video',
+        'Focus Spot',
+        'Learning Outcome Definition',
+        'Lesson Plan',
+        'Marking Scheme Rubric',
+        'Pedagogy Flow',
+        'Previous Board Exam Papers',
+        'TV Lesson',
+        'Textbook'],
+        required: false,
+        visible: true
+      },
     {
         code: 'author',
         dataType: 'text',
@@ -63,7 +217,7 @@ export const formConfig = [
         code: 'license',
         dataType: 'list',
         description: 'Licence',
-        editable: true,
+        editable: false,
         inputType: 'select',
         label: 'Licence',
         name: 'Licence',
@@ -71,14 +225,7 @@ export const formConfig = [
         renderingHints: {class: 'sb-g-col-lg-1'},
         required: true,
         visible: true,
-        range: [{
-                value: 'CC BY 4.0',
-                label: 'CC BY 4.0',
-            }, {
-                value: 'CC BY-NC 4.0',
-                label: 'CC BY-NC 4.0',
-            }
-        ],
+        range: ''
     },
     {
         code: 'audience',
@@ -94,4 +241,52 @@ export const formConfig = [
         visible: true,
         range: ['Student', 'Teacher', 'Administrator'],
     },
+    {
+        code: 'showFeedback',
+        dataType: 'text',
+        description: 'Show Feedback',
+        editable: true,
+        default: false,
+        index: 5,
+        inputType: 'checkbox',
+        label: 'Show Feedback',
+        name: 'showFeedback',
+        placeholder: 'Show Feedback',
+        renderingHints: {
+        },
+        required: false,
+        visible: true
+      },
+      {
+        code: 'shuffleQuestions',
+        dataType: 'text',
+        description: 'Shuffle Questions',
+        editable: true,
+        default: false,
+        index: 5,
+        inputType: 'checkbox',
+        label: 'Shuffle Questions',
+        name: 'Shuffle Questions',
+        placeholder: 'Shuffle Questions',
+        renderingHints: {
+        },
+        required: false,
+        visible: true
+      },
+      {
+        code: 'showQuestions',
+        dataType: 'text',
+        description: 'Show Questions',
+        editable: true,
+        index: 5,
+        inputType: 'select',
+        label: 'Show Questions',
+        name: 'showQuestions',
+        placeholder: 'Show Questions',
+        renderingHints: {
+        },
+        required: false,
+        visible: true,
+        range: [1, 2, 3, 4, 5]
+      }
 ];
