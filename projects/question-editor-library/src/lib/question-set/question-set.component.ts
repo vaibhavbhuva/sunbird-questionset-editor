@@ -27,6 +27,35 @@ export class QuestionSetComponent implements OnInit {
       if (metadata && metadata[field.code]) {
         field.default = metadata[field.code];
       }
+
+      if ((_.isEmpty(field.range) || _.isEmpty(field.terms)) &&
+      !field.editable && !_.isEmpty(field.default)) {
+        if (_.has(field, 'terms')) {
+          field.terms = [];
+          if (_.isArray(field.default)) {
+            field.terms = field.default;
+          } else {
+            field.terms.push(field.default);
+          }
+        } else {
+          field.range = [];
+          if (_.isArray(field.default)) {
+            field.range = field.default;
+          } else {
+            field.range.push(field.default);
+          }
+        }
+      }
+
+
+      if (field.inputType === 'nestedselect') {
+        _.map(field.range, val => {
+          return {
+            value: val.value || val,
+            label: val.value || val
+          }
+        });
+      }
     });
   }
 
@@ -44,4 +73,5 @@ export class QuestionSetComponent implements OnInit {
   valueChanges(event) {
     this.treeService.updateNode(event);
   }
+
 }
