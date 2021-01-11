@@ -43,7 +43,7 @@
     "rxjs": "~6.3.3",
     "svg2img": "^0.6.1",
     "tslib": "^1.9.0",
-    "v-dynamic-forms": "0.0.1-beta.21",
+    "v-dynamic-forms": "0.0.1-beta.22",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
