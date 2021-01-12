@@ -9,7 +9,7 @@ declare var $: any;
 @Component({
   selector: 'lib-tree',
   templateUrl: './tree.component.html',
-  styleUrls: ['./tree.component.css']
+  styleUrls: ['./tree.component.scss']
 })
 export class TreeComponent implements OnInit, AfterViewInit {
   @ViewChild('fancyTree') public tree: ElementRef;

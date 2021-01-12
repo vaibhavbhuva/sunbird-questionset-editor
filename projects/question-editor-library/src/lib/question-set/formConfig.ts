@@ -29,7 +29,7 @@ export const formConfig = [
         label: 'Description',
         name: 'Description',
         placeholder: 'Description',
-        renderingHints: {},
+        renderingHints: {class: 'sb-g-col-lg-1'},
         required: false,
         visible: true,
         validations: [{
@@ -52,7 +52,7 @@ export const formConfig = [
     //     label: 'Board/Syllabus',
     //     name: 'Board/Syllabus',
     //     placeholder: 'Select Board/Syllabus',
-    //     renderingHints: {},
+    //     renderingHints: {class: 'sb-g-col-lg-1'},
     //     required: true,
     //     visible: true,
     //     type: 'select',
@@ -82,7 +82,7 @@ export const formConfig = [
     //     label: 'medium',
     //     name: 'medium',
     //     placeholder: 'Select Medium',
-    //     renderingHints: {},
+    //     renderingHints: {class: 'sb-g-col-lg-1'},
     //     required: true,
     //     visible: true,
     //     identifier: 'ekstep_ncert_k-12_medium',
@@ -113,7 +113,7 @@ export const formConfig = [
     //     label: 'Class',
     //     name: 'Class',
     //     placeholder: 'Select Class',
-    //     renderingHints: {},
+    //     renderingHints: {class: 'sb-g-col-lg-1'},
     //     required: true,
     //     visible: true,
     //     identifier: 'ekstep_ncert_k-12_gradelevel',
@@ -132,6 +132,7 @@ export const formConfig = [
         dataType: 'text',
         description: 'Collection Type',
         editable: false,
+        renderingHints: {class: 'sb-g-col-lg-1'},
         index: 0,
         inputType: 'select',
         label: 'Collection Type',
@@ -155,9 +156,7 @@ export const formConfig = [
         label: 'Additional Category',
         name: 'Additional Category',
         placeholder: 'Select Additional Category',
-        renderingHints: {
-
-        },
+        renderingHints: {class: 'sb-g-col-lg-1'},
         range: ['Classroom Teaching Video',
         'Concept Map',
         'Curiosity Question Set',
@@ -252,13 +251,12 @@ export const formConfig = [
         label: 'Show Feedback',
         name: 'showFeedback',
         placeholder: 'Show Feedback',
-        renderingHints: {
-        },
+        renderingHints: {class: 'sb-g-col-lg-1'},
         required: false,
         visible: true
       },
       {
-        code: 'shuffleQuestions',
+        code: 'shuffle',
         dataType: 'text',
         description: 'Shuffle Questions',
         editable: true,
@@ -268,8 +266,7 @@ export const formConfig = [
         label: 'Shuffle Questions',
         name: 'Shuffle Questions',
         placeholder: 'Shuffle Questions',
-        renderingHints: {
-        },
+        renderingHints: {class: 'sb-g-col-lg-1'},
         required: false,
         visible: true
       },
@@ -283,8 +280,7 @@ export const formConfig = [
         label: 'Show Questions',
         name: 'showQuestions',
         placeholder: 'Show Questions',
-        renderingHints: {
-        },
+        renderingHints: {class: 'sb-g-col-lg-1'},
         required: false,
         visible: true,
         range: [1, 2, 3, 4, 5]

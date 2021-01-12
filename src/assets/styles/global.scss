@@ -43,6 +43,10 @@ body {
     font-style: italic;
 }
 
+.b-1-100 {
+  border: solid 1px #cccccc;
+}
+
 @media only screen and (max-width: 1199px) and (min-width: 768px) {
   .ui.container {
     width: 95%;

@@ -15,9 +15,15 @@
     "@ckeditor/ckeditor5-image": "^12.0.0",
     "@ckeditor/ckeditor5-ui": "^11.2.0",
     "@project-sunbird/ckeditor-build-font": "^1.0.8",
-    "ckeditor-build-font": "^1.0.5"
+    "ckeditor-build-font": "^1.0.5",
+    "@project-sunbird/sunbird-quml-player": "0.0.4",
+    "bootstrap": "4.1.1",
+    "katex": "^0.12.0",
+    "ngx-bootstrap": "^5.6.2",
+    "@project-sunbird/sb-styles": "0.0.7",
+    "@project-sunbird/telemetry-sdk": "0.0.26"
   },
   "dependencies": {
-    "v-dynamic-forms": "0.0.1-beta.9"
+    "v-dynamic-forms": "0.0.1-beta.23"
   }
 }

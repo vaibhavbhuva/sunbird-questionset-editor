@@ -4,7 +4,7 @@ import * as _ from 'lodash-es';
 @Component({
   selector: 'lib-template',
   templateUrl: './template.component.html',
-  styleUrls: ['./template.component.css']
+  styleUrls: ['./template.component.scss']
 })
 export class TemplateComponent implements OnInit, OnDestroy {
 

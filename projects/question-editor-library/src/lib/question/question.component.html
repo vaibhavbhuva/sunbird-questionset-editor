@@ -1,30 +1,38 @@
 <div class="add-to-library mb-30" *ngIf="!showLoader">
-  <lib-header [toolbarConfig]="toolbarConfig" (toolbarEmitter)="toolbarEventListener($event)">
+  <lib-header [toolbarConfig]="toolbarConfig"
+    (toolbarEmitter)="toolbarEventListener($event)">
   </lib-header>
+
   <div class="min-h-500 sb-bg-white py-20">
     <div class="ui container">
       <div class="ui twelve column wide">
         <div class="px-16">
-          <div class="b-1-100">
-            <div class="py-20 px-32 sb-bg-color-primary-0">
+          <div class="sb-quml-player br-4 b-1-100">
+            <div *ngIf="showPreview && !showLoader">
+              <quml-player [QumlPlayerConfig]="QumlPlayerConfig" (playerEvent)="getPlayerEvents($event)"
+                (telemetryEvent)="getTelemetryEvents($event)"></quml-player>
+            </div>
+            <div class="py-20 px-32 sb-bg-color-primary-0" *ngIf="!showPreview && !showLoader">
               <div class="sb-field-group">
                 <label class="fs-0-92">Question<span class="sb-required">*</span></label>
                 <div class="sb-field">
                   <div class="ckeditor-tool__question mb-5">
                     <lib-ckeditor-tool [editorConfig]="ckeditorConfig"
-                      (editorDataOutput)="editorDataHandler($event, 'question');"
+                      (editorDataOutput)="editorDataHandler($event, 'question')"
                       [editorDataInput]="editorState.question" [editorId]="'question_editor'"
                       (videoDataOutput)="videoDataOutput($event)" [videoShow]="videoShow"></lib-ckeditor-tool>
                   </div>
-                  <label *ngIf="showFormError && [undefined, ''].includes(editorState.question)"
-                    class="sb-color-error fs-0-785">Question is required</label>
+                  <label *ngIf="
+                      showFormError &&
+                      [undefined, ''].includes(editorState.question)
+                    " class="sb-color-error fs-0-785">Question is required</label>
                 </div>
 
-                <lib-answer *ngIf="(questionInteractionType === 'default')" [editorConfig]="ckeditorConfig"
+                <lib-answer *ngIf="questionInteractionType === 'default'" [editorConfig]="ckeditorConfig"
                   [editorState]="editorState" [showFormError]="showFormError"
                   (editorDataOutput)="editorDataHandler($event)"></lib-answer>
 
-                <lib-options *ngIf="(questionInteractionType === 'choice')" [editorConfig]="ckeditorConfig"
+                <lib-options *ngIf="questionInteractionType === 'choice'" [editorConfig]="ckeditorConfig"
                   [editorState]="editorState" [showFormError]="showFormError" [questionMetaData]="questionMetaData"
                   (editorDataOutput)="editorDataHandler($event)"></lib-options>
 
@@ -33,26 +41,29 @@
                     <span class="sb-color-primary fs-0-785 mr-4">Solution</span>
                     <span class="sb-color-gray-200 fxsmall font-weight-normal">(Optional)</span>
                   </label>
-                  <!-- <div
-                    class="ui dropdown sb-btn sb-btn-outline-primary sb-btn-normal sb-right-icon-btn sb-btn-radius ml-auto"
+                  <!-- <div class="ui dropdown sb-btn sb-btn-outline-primary sb-btn-normal sb-right-icon-btn sb-btn-radius ml-auto"
                     suiDropdown autoClose="itemClick" *ngIf="showSolutionDropDown">
                     <div class="text gray-200">Choose type</div>
                     <i class="dropdown icon mx-8"></i>
                     <div class="menu" suiDropdownMenu>
-                      <div class="item" (click)="selectSolutionType('Text+Image')">Text+Image</div>
-                      <div class="item" (click)="selectSolutionType('video')">Video</div>
+                      <div class="item" (click)="selectSolutionType('Text+Image')">
+                        Text+Image
+                      </div>
+                      <div class="item" (click)="selectSolutionType('video')">
+                        Video
+                      </div>
                     </div>
                   </div> -->
                 </div>
                 <div class="solution_html" *ngIf="selectedSolutionType == 'html'">
                   <div class="ckeditor-tool-container">
                     <div class="sb-ckeditor relative mb-8">
-                      <button (click)="deleteSolution()" class="sb-btn sb-ckeditor-close absolute"><i
-                          class="icon close"></i>
+                      <button (click)="deleteSolution()" class="sb-btn sb-ckeditor-close absolute">
+                        <i class="icon close"></i>
                       </button>
-                      <lib-ckeditor-tool [editorConfig]="ckeditorConfig"
-                        (editorDataOutput)="editorDataHandler($event, 'solution')"
-                        [editorDataInput]="editorState.solutions" [editorId]="'solution_editor'"
+                      <lib-ckeditor-tool [editorConfig]="ckeditorConfig" (editorDataOutput)="
+                          editorDataHandler($event, 'solution')
+                        " [editorDataInput]="editorState.solutions" [editorId]="'solution_editor'"
                         class="ckeditor-tool__option"></lib-ckeditor-tool>
                     </div>
                   </div>
@@ -61,17 +72,22 @@
                   <div class="ckeditor-tool__solution sb-bg-color-white sb-ckeditor relative">
                     <div class="solution-media p-16 d-flex flex-ai-center ckeditor-tool__option p-16">
                       <div class="mcq-checkbox-answer">
-                        <button class="sb-btn sb-ckeditor-close absolute" (click)="deleteSolution()"><i
-                            class="icon close"></i></button>
+                        <button class="sb-btn sb-ckeditor-close absolute" (click)="deleteSolution()">
+                          <i class="icon close"></i>
+                        </button>
                       </div>
                       <div class="solution-media__video relative position">
-                        <div class="overlay-image"
-                          [ngStyle]="videoThumbnail ?  {'background' : 'url(' + videoThumbnail + ')' }  : {'background': 'rgba(0,0,0,0.3)'}">
+                        <div class="overlay-image" [ngStyle]="
+                            videoThumbnail
+                              ? { background: 'url(' + videoThumbnail + ')' }
+                              : { background: 'rgba(0,0,0,0.3)' }
+                          ">
                           <i class="play circle icon"></i>
                         </div>
                       </div>
                       <div class="solution-media__desc ml-16 sb-color-primary">
-                        {{videoSolutionName}}<i class="icon ellipsis vertical sb-color-black"></i>
+                        {{ videoSolutionName
+                        }}<i class="icon ellipsis vertical sb-color-black"></i>
                       </div>
                     </div>
                   </div>
@@ -86,11 +102,11 @@
 </div>
 
 <sui-modal *ngIf="showConfirmPopup" [mustScroll]="true" [isClosable]="true" [transitionDuration]="0" [size]="'small'"
-  class="sb-modal " appBodyScroll (dismissed)="showConfirmPopup = !showConfirmPopup" #modal>
-  <div class="sb-modal-header">
-  </div>
+  class="sb-modal" appBodyScroll (dismissed)="showConfirmPopup = !showConfirmPopup" #modal>
+  <div class="sb-modal-header"></div>
   <div class="sb-modal-content">
-    This question will not be saved, are you sure you want to go back to questionset?
+    This question will not be saved, are you sure you want to go back to
+    questionset?
   </div>
   <div class="sb-modal-actions">
     <button class="sb-btn sb-btn-normal sb-btn-primary" (click)="redirectToQuestionset()">

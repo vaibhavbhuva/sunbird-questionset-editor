@@ -11,9 +11,12 @@ export class QuestionService {
   constructor(public dataService: DataService) { }
 
   readQuestion(questionId) {
-    const filters = '?fields=body,answer,templateId,responseDeclaration,interactionTypes,interactions,name,solutions,editorState,media';
     const option = {
-      url: `question/v1/read/${questionId}${filters}`,
+      url: `question/v1/read/${questionId}`,
+      param: {
+        // tslint:disable-next-line:max-line-length
+        fields: 'body,primaryCategory, mimeType, qType, answer,templateId,responseDeclaration,interactionTypes,interactions,name,solutions,editorState,media'
+      }
     };
     return this.dataService.get(option);
   }

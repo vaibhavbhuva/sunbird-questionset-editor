@@ -17,6 +17,8 @@ import { QuestionSetComponent } from './question-set/question-set.component';
 import { PlayerComponent } from './player/player.component';
 import { TemplateComponent } from './template/template.component';
 import {CkeditorToolComponent} from './ckeditor-tool/ckeditor-tool.component';
+import { QumlLibraryModule } from '@project-sunbird/sunbird-quml-player';
+import {CarouselModule} from 'ngx-bootstrap/carousel';
 
 
 @NgModule({
@@ -24,7 +26,7 @@ import {CkeditorToolComponent} from './ckeditor-tool/ckeditor-tool.component';
   TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent],
   imports: [
     CommonModule, FormsModule, RouterModule.forRoot([]), CommonFormElementsModule, InfiniteScrollModule,
-    HttpClientModule, SuiModule
+    HttpClientModule, SuiModule, QumlLibraryModule, CarouselModule.forRoot()
   ],
   exports: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent]
 })

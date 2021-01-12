@@ -4,14 +4,46 @@ import * as _ from 'lodash-es';
 import { map } from 'rxjs/operators';
 import { TreeService, DataService } from '../../services';
 
+interface SelectedChildren {
+  primaryCategory?: string;
+  mimeType?: string;
+  interactionType?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class EditorService {
   data: any;
+  private _selectedChildren: SelectedChildren = {};
+  private _hierarchyConfig: any;
   public questionStream$ = new Subject<any>();
 
   constructor(public treeService: TreeService, private dataService: DataService) { }
+
+  set selectedChildren(value: SelectedChildren) {
+    if (value.mimeType) {
+      this._selectedChildren.mimeType = value.mimeType;
+    }
+    if (value.primaryCategory) {
+      this._selectedChildren.primaryCategory = value.primaryCategory;
+    }
+    if (value.interactionType) {
+      this._selectedChildren.interactionType = value.interactionType;
+    }
+  }
+
+  get selectedChildren() {
+    return this._selectedChildren;
+  }
+
+  set hierarchyConfig(value: any) {
+    this._hierarchyConfig = value;
+  }
+
+  get hierarchyConfig() {
+    return this._hierarchyConfig;
+  }
 
   public getQuestionSetHierarchy(identifier: string) {
     console.log('getQuestionSetHierarchy ');
@@ -83,5 +115,21 @@ export class EditorService {
       });
     }
     return instance.data;
+  }
+
+  getCategoryDefinition(categoryName, rootOrgId, objectType?: any) {
+    const req = {
+      url: 'object/category/definition/v1/read?fields=objectMetadata,forms,name',
+      data: {
+        request: {
+          objectCategoryDefinition: {
+              objectType: objectType ? objectType : 'Content',
+              name: categoryName
+              // 'channel': rootOrgId
+          },
+        }
+      }
+    };
+    return this.dataService.post(req);
   }
 }

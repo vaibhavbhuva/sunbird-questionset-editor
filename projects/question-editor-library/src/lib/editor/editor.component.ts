@@ -1,21 +1,21 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { EditorConfig } from '../question-editor-library-interface';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
-import { templateList, toolbarConfig } from '../editor.config';
-import { EditorService, TreeService } from '../services';
+import { toolbarConfig } from '../editor.config';
+import { EditorService, TreeService, EditorTelemetryService } from '../services';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'lib-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css']
+  styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit, AfterViewInit {
   @Input() editorConfig: EditorConfig | undefined;
   public toolbarConfig = toolbarConfig;
-  public templateList: any = templateList;
+  public templateList: any;
   public collectionTreeNodes: any;
   public selectedQuestionData: any = {};
   public showQuestionTemplate = false;
@@ -24,25 +24,50 @@ export class EditorComponent implements OnInit, AfterViewInit {
   public submitFormStatus = false;
   public terms = false;
   public collectionId;
+  public rootObject = 'QuestionSet';
+  public childObject = 'Question';
 
   constructor(private editorService: EditorService, private treeService: TreeService,
-              private router: Router) { }
+              private router: Router, private telemetryService: EditorTelemetryService) { }
 
   ngOnInit() {
     this.collectionId = 'do_113187143974723584150';
     console.log('QuestionSet config', this.editorConfig);
+    this.telemetryService.initializeTelemetry(this.editorConfig);
     this.fetchQuestionSetHierarchy();
   }
 
-  ngAfterViewInit() { }
+  ngAfterViewInit() {}
 
   fetchQuestionSetHierarchy() {
     this.editorService.getQuestionSetHierarchy(this.collectionId).pipe(catchError(error => {
       const errInfo = {
         errorMsg: 'Fetching question set details failed. Please try again...',
       };
-      return throwError(error);
+      return throwError(errInfo);
     })).subscribe(res => {
+      if (_.isUndefined(this.editorService.hierarchyConfig)) {
+        // tslint:disable-next-line:max-line-length
+        this.editorService.getCategoryDefinition(res.primaryCategory, null, this.rootObject).subscribe((categoryDefRes) => {
+          console.log('categoryDefRes ', categoryDefRes);
+          const objectMetadata = categoryDefRes.result.objectCategoryDefinition.objectMetadata;
+          if (!_.isEmpty(_.get(objectMetadata, 'config.hierarchyConfig'))) {
+            this.editorService.hierarchyConfig = objectMetadata.config.hierarchyConfig;
+          } else {
+            this.editorService.hierarchyConfig = {
+              maxDepth: 1,
+              children: {
+                  Question: ['Multiple Choice Question', 'Subjective Question']
+              }
+            };
+          }
+          this.templateList = this.editorService.hierarchyConfig.children[this.childObject];
+        }, (err) => {
+          console.log(err);
+        });
+      } else {
+        this.templateList = this.editorService.hierarchyConfig.children[this.childObject];
+      }
       this.toolbarConfig.title = res.name;
       this.collectionTreeNodes = res;
       if (_.isEmpty(res.children)) {
@@ -63,7 +88,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
         this.removeNode();
         break;
       case 'editContent':
-        this.redirectToQuestionTab();
+        this.redirectToQuestionTab('edit');
         break;
       case 'showQuestionTemplate':
         this.showQuestionTemplatePopup = true;
@@ -77,6 +102,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   saveCollection() {
+    this.telemetryService.start({ type: 'content', mode: 'play', pageid: '', duration: Number((1.23 / 1e3).toFixed(2)) });
     this.editorService.updateQuestionSetHierarchy()
       .pipe(map(data => _.get(data, 'result'))).subscribe(response => {
         this.treeService.replaceNodeId(response.identifiers);
@@ -121,41 +147,43 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   handleTemplateSelection($event) {
-    this.showQuestionTemplatePopup = false;
-    const selectedQuestionType = $event.type;
+    const selectedQuestionType = $event;
     if (selectedQuestionType === 'close') { return false; }
     console.log(selectedQuestionType);
-    // this.programsService.getCategoryDefinition(selectedQuestionType, this.userService.channel).subscribe((res) => {
-    //   const selectedtemplateDetails = res.result.objectCategoryDefinition;
-    //   const catMetaData = selectedtemplateDetails.objectMetadata;
-    //   if (_.isEmpty(_.get(catMetaData, 'schema.properties.interactionTypes.enum'))) {
-    //       this.toasterService.error(this.resourceService.messages.emsg.m0026);
-    //   } else {
-    //     const supportedMimeTypes = catMetaData.schema.properties.interactionTypes.enum;
-    //     console.log(supportedMimeTypes);
-    //   }
-    // }, (err) => {
-    //   this.toasterService.error(this.resourceService.messages.emsg.m0027);
-    // });
-    this.redirectToQuestionTab(selectedQuestionType);
+    // tslint:disable-next-line:max-line-length
+    this.editorService.getCategoryDefinition(selectedQuestionType, null, this.childObject).subscribe((res) => {
+      const selectedtemplateDetails = res.result.objectCategoryDefinition;
+      const catMetaData = selectedtemplateDetails.objectMetadata;
+      if (_.isEmpty(_.get(catMetaData, 'schema.properties.interactionTypes.items.enum'))) {
+          // this.toasterService.error(this.resourceService.messages.emsg.m0026);
+          this.editorService.selectedChildren = {
+            primaryCategory: selectedQuestionType,
+            mimeType: catMetaData.schema.properties.mimeType.enum[0],
+            interactionType: null
+          };
+          this.redirectToQuestionTab(undefined, 'default');
+      } else {
+        const interactionTypes = catMetaData.schema.properties.interactionTypes.items.enum;
+        this.editorService.selectedChildren = {
+          primaryCategory: selectedQuestionType,
+          mimeType: catMetaData.schema.properties.mimeType.enum[0],
+          interactionType: interactionTypes[0]
+        };
+        this.redirectToQuestionTab(undefined, interactionTypes[0]);
+      }
+    }, (err) => {
+      console.log(err);
+    });
   }
 
-  redirectToQuestionTab(type?) {
-    let questionId;
-    if (!type) {
-      type = this.selectedQuestionData.data.metadata.interactionTypes || 'default';
-      questionId = this.selectedQuestionData.data.metadata.identifier;
+  redirectToQuestionTab(mode?, interactionType?) {
+    let queryParams = '?';
+    if (interactionType) {
+      queryParams += `type=${interactionType}`;
     }
-    if (type) {
-      if (type === 'MCQ') {
-        type = 'choice';
-      }
-      if (type === 'Subjective') {
-        type = 'default';
-      }
+    if (mode === 'edit' && this.selectedQuestionData.data.metadata.identifier) {
+      queryParams += `questionId=${this.selectedQuestionData.data.metadata.identifier}`;
     }
-    let queryParams = `?type=${type}`;
-    if (questionId) { queryParams += `&questionId=${questionId}`; }
     this.router.navigateByUrl(`/create/questionSet/${this.collectionId}/question${queryParams}`);
   }
 }

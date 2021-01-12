@@ -6,13 +6,15 @@ import { EditorConfig } from '../question-editor-library-interface';
 import { questionToolbarConfig, questionEditorConfig } from '../editor.config';
 import { McqForm, ServerResponse } from '../interfaces';
 import { EditorService, QuestionService } from '../services';
+import { data1 } from '../player/quml-library-data';
 
 @Component({
   selector: 'lib-question',
   templateUrl: './question.component.html',
-  styleUrls: ['./question.component.css']
+  styleUrls: ['./question.component.scss']
 })
 export class QuestionComponent implements OnInit {
+  QumlPlayerConfig = data1;
   @Input() editorConfig: EditorConfig | undefined;
   toolbarConfig = questionToolbarConfig;
   public ckeditorConfig: any = questionEditorConfig;
@@ -46,6 +48,8 @@ export class QuestionComponent implements OnInit {
   public showLoader = true;
   questionSetHierarchy: any;
   showConfirmPopup = false;
+  public questionData: any = {};
+  validQuestionData = false;
 
   constructor(
     private questionService: QuestionService,
@@ -54,14 +58,11 @@ export class QuestionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.questionData = this.editorService.selectedChildren;
+    this.toolbarConfig.title = this.questionData.primaryCategory;
     this.questionInteractionType = 'choice';
-    // this.questionId = 'do_11318800070280806413';
+    this.questionId = 'do_11319194338113126419';
     this.questionSetId = 'do_113187143974723584150';
-    if (this.questionInteractionType === 'default') {
-      this.toolbarConfig.title = 'Subjective';
-    } else if (this.questionInteractionType === 'choice') {
-      this.toolbarConfig.title = 'MCQ';
-    }
     this.initialize();
     this.solutionUUID = UUID.UUID();
   }
@@ -76,7 +77,7 @@ export class QuestionComponent implements OnInit {
         .subscribe((res) => {
           if (res.result) {
             this.questionMetaData = res.result.question;
-
+            this.questionInteractionType = this.questionMetaData.interactionTypes ? this.questionMetaData.interactionTypes[0] : 'default';
             if (this.questionInteractionType === 'default') {
               if (this.questionMetaData.editorState) {
                 this.editorState = this.questionMetaData.editorState;
@@ -142,6 +143,13 @@ export class QuestionComponent implements OnInit {
       case 'backContent':
         this.handleRedirectToQuestionset();
         break;
+      case 'previewContent':
+        this.previewContent();
+        break;
+        case 'editContent':
+          this.showPreview = false;
+          this.showLoader = false;
+          break;
       default:
         break;
     }
@@ -183,6 +191,7 @@ export class QuestionComponent implements OnInit {
         this.showFormError = false;
       }
     }
+    this.validQuestionData = true;
     this.saveQuestion();
   }
 
@@ -301,8 +310,6 @@ export class QuestionComponent implements OnInit {
 
   prepareRequestBody() {
     let metadata: any = {
-      code: UUID.UUID(),
-      status: 'Draft',
       mimeType: 'application/vnd.sunbird.question',
       media: this.mediaArr,
       editorState: {}
@@ -323,13 +330,13 @@ export class QuestionComponent implements OnInit {
     if (_.isEmpty(this.editorState.solutions)) {
       metadata.solutions = [];
     }
-    return _.omit(metadata, ['question', 'answer', 'numberOfOptions', 'options']);
+    return _.omit(metadata, ['question', 'numberOfOptions', 'options']);
   }
 
   getMcqQuestionHtmlBody(question, templateId) {
     const mcqTemplateConfig = {
       // tslint:disable-next-line:max-line-length
-      mcqBody: '<div class=\"question-body\"><div class=\"mcq-title\">{question}</div><div data-choice-interaction=\"response1\" class="{templateClass}"></div></div>'
+      mcqBody: '<div class=\'question-body\'><div class=\'mcq-title\'>{question}</div><div data-choice-interaction=\'response1\' class=\'{templateClass}\'></div></div>'
     };
     const { mcqBody } = mcqTemplateConfig;
     const questionBody = mcqBody.replace('{templateClass}', templateId)
@@ -343,8 +350,10 @@ export class QuestionComponent implements OnInit {
       subscribe(
         (response: ServerResponse) => {
           if (response.result) {
+            const questionId = response.result.identifiers.questionId;
             alert('Question is created');
-            this.router.navigate([`create/questionSet/${this.questionSetId}`]);
+            // tslint:disable-next-line:max-line-length
+            this.router.navigate([`create/questionSet/${this.questionSetId}/question`], { queryParams: { type: this.questionInteractionType, questionId } });
           }
         },
         (err: ServerResponse) => {
@@ -359,12 +368,35 @@ export class QuestionComponent implements OnInit {
         (response: ServerResponse) => {
           if (response.result) {
             alert('Question is updated');
-            this.router.navigate([`create/questionSet/${this.questionSetId}`]);
+            // tslint:disable-next-line:max-line-length
+            this.router.navigate([`create/questionSet/${this.questionSetId}/question`], { queryParams: { type: this.questionInteractionType, questionId } });
           }
         },
         (err: ServerResponse) => {
           console.log(err);
         });
+  }
+
+ async previewContent() {
+   await this.saveContent();
+   if (this.validQuestionData === true) {
+    await this.setQumlData();
+    this.showPreview = true;
+   }
+  }
+
+  setQumlData() {
+    this.QumlPlayerConfig.data.children = [];
+    const questionMetadata = this.prepareRequestBody();
+    this.QumlPlayerConfig.data.children.push(questionMetadata);
+  }
+
+  getPlayerEvents(event) {
+    console.log('get player events', JSON.stringify(event));
+  }
+
+  getTelemetryEvents(event) {
+    console.log('event is for telemetry', JSON.stringify(event));
   }
 
 }

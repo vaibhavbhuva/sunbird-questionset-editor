@@ -1,5 +1,6 @@
-<h3>{{questionMetaData.title}}</h3>
-<hr class="my-20">
+<div class="sb-quml-player b-1-100 br-4" *ngIf="showPlayerPreview">
+    <quml-player [QumlPlayerConfig]="QumlPlayerConfig" (playerEvent)="getPlayerEvents($event)" (telemetryEvent)="getTelemetryEvents($event)"></quml-player>
+</div>
 <div class="ui">
     <div class="ui twelve column grid m-0">
         <div class="eight wide column p-0 text-left">

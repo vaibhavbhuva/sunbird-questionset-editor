@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'lib-answer',
   templateUrl: './answer.component.html',
-  styleUrls: ['./answer.component.css']
+  styleUrls: ['./answer.component.scss']
 })
 export class AnswerComponent implements OnInit {
   @Input() editorConfig;

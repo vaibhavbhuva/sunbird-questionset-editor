@@ -1,19 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash-es';
-import { TreeService } from '../services';
+import { TreeService, HelperService } from '../services';
 import { formConfig } from './formConfig';
 
 @Component({
   selector: 'lib-question-set',
   templateUrl: './question-set.component.html',
-  styleUrls: ['./question-set.component.css']
+  styleUrls: ['./question-set.component.scss']
 })
 export class QuestionSetComponent implements OnInit {
   @Input() questionSetMetadata: any;
-  @Input() telemetryEventsInput: any;
   @Output() toolbarEmitter = new EventEmitter<any>();
   config = formConfig;
-  constructor(private treeService: TreeService) { }
+  constructor(private treeService: TreeService, private helperService: HelperService) { }
 
   ngOnInit() {
     this.prepareFormConfiguration();
@@ -47,15 +46,26 @@ export class QuestionSetComponent implements OnInit {
         }
       }
 
-
       if (field.inputType === 'nestedselect') {
         _.map(field.range, val => {
           return {
             value: val.value || val,
             label: val.value || val
-          }
+          };
         });
       }
+
+      switch (field.code) {
+        case 'license':
+          const licenses = this.helperService.getAvailableLicenses();
+          if (licenses && licenses.length) {
+            field.range = _.map(licenses, 'name');
+          }
+          break;
+        default:
+          break;
+      }
+
     });
   }
 
@@ -63,8 +73,7 @@ export class QuestionSetComponent implements OnInit {
     this.toolbarEmitter.emit({ button: { type: 'showQuestionTemplate' } });
   }
 
-  output(event) {
-  }
+  output(event) {}
 
   onStatusChanges(event) {
     this.toolbarEmitter.emit({ button: { type: 'onFormChange' }, event });

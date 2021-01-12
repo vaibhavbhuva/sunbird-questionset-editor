@@ -4,13 +4,12 @@ import {McqQuestionTemplate} from '../editor.config';
 @Component({
   selector: 'lib-options',
   templateUrl: './options.component.html',
-  styleUrls: ['./options.component.css']
+  styleUrls: ['./options.component.scss']
 })
 export class OptionsComponent implements OnInit {
   @Input() editorConfig;
   @Input() editorState: any;
   @Input() showFormError;
-  @Input() telemetryPageDetails;
   @Input() questionMetaData;
   @Output() editorDataOutput: EventEmitter<any> = new EventEmitter<any>();
   public setCharacterLimit = 160;
