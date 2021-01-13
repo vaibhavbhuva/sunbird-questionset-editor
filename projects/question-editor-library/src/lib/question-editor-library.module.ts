@@ -19,11 +19,13 @@ import { TemplateComponent } from './template/template.component';
 import {CkeditorToolComponent} from './ckeditor-tool/ckeditor-tool.component';
 import { QumlLibraryModule } from '@project-sunbird/sunbird-quml-player';
 import {CarouselModule} from 'ngx-bootstrap/carousel';
+import { TelemetryInteractDirective } from './directives';
 
 
 @NgModule({
   declarations: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent, HeaderComponent,
-  TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent],
+  TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent,
+  TelemetryInteractDirective],
   imports: [
     CommonModule, FormsModule, RouterModule.forRoot([]), CommonFormElementsModule, InfiniteScrollModule,
     HttpClientModule, SuiModule,  QumlLibraryModule, CarouselModule.forRoot()

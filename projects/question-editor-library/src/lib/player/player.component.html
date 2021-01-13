@@ -1,11 +1,11 @@
 <div class="sb-quml-player b-1-100 br-4" *ngIf="showPlayerPreview">
     <quml-player [QumlPlayerConfig]="QumlPlayerConfig" (playerEvent)="getPlayerEvents($event)" (telemetryEvent)="getTelemetryEvents($event)"></quml-player>
 </div>
-<div class="ui">
+<div class="ui mt-20">
     <div class="ui twelve column grid m-0">
         <div class="eight wide column p-0 text-left">
-            <button type="button" class="sb-btn sb-btn-normal sb-btn-primary" (click)="editQuestion();"><i
-                    class="icon edit"></i>Edit</button>
+            <button type="button" class="sb-btn sb-btn-normal sb-btn-primary" (click)="editQuestion();">
+                <i class="icon edit"></i>Edit</button>
             <button type="button" class="sb-btn sb-btn-normal sb-btn-outline-primary mx-15"
                 (click)="removeQuestion()"><i class="icon trash sb-color-primary"></i>Delete</button>
         </div>
