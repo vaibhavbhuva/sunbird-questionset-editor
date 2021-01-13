@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QuestionEditorLibraryModule } from 'question-editor-library';
 import { AppComponent } from './app.component';
 import { EditorRoutingModule } from './editor-routing.module';
@@ -15,7 +16,8 @@ import { QuestionBaseComponent } from './question-base/question-base.component';
   imports: [
     BrowserModule,
     QuestionEditorLibraryModule,
-    EditorRoutingModule
+    EditorRoutingModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

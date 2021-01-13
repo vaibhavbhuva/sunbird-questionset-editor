@@ -89,10 +89,10 @@ export class EditorTelemetryService {
     });
   }
 
-  public interact(edata) {
+  public interact(eventData) {
     CsTelemetryModule.instance.telemetryService.raiseInteractTelemetry({
       options: this.getEventOptions(),
-      edata
+      edata: eventData.edata
     });
   }
 
@@ -119,7 +119,7 @@ export class EditorTelemetryService {
       context: {
         channel: this.channel,
         pdata: this.pdata,
-        env: 'ContentPlayer',
+        env: 'QuestionSetEditor',
         sid: this.sid,
         uid: this.uid,
         cdata: [{ id: this.contentSessionId, type: 'ContentSession' },

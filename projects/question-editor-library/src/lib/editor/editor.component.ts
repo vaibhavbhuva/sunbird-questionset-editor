@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { EditorConfig } from '../question-editor-library-interface';
 import { catchError, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
 import { toolbarConfig } from '../editor.config';
-import { EditorService, TreeService, EditorTelemetryService } from '../services';
+import { EditorService, TreeService, EditorTelemetryService, HelperService } from '../services';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 })
 export class EditorComponent implements OnInit, AfterViewInit {
   @Input() editorConfig: EditorConfig | undefined;
-  public toolbarConfig = toolbarConfig;
+  public toolbarConfig: any = toolbarConfig;
   public templateList: any;
   public collectionTreeNodes: any;
   public selectedQuestionData: any = {};
@@ -27,14 +27,15 @@ export class EditorComponent implements OnInit, AfterViewInit {
   public rootObject = 'QuestionSet';
   public childObject = 'Question';
 
-  constructor(private editorService: EditorService, private treeService: TreeService,
-              private router: Router, private telemetryService: EditorTelemetryService) { }
+  constructor(private editorService: EditorService, private treeService: TreeService, private helperService: HelperService,
+              private router: Router, private telemetryService: EditorTelemetryService,  private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.collectionId = 'do_113187143974723584150';
+    this.collectionId = 'do_113193433773948928111';
     console.log('QuestionSet config', this.editorConfig);
     this.telemetryService.initializeTelemetry(this.editorConfig);
     this.fetchQuestionSetHierarchy();
+    this.helperService.initialize();
   }
 
   ngAfterViewInit() {}
@@ -70,10 +71,21 @@ export class EditorComponent implements OnInit, AfterViewInit {
       }
       this.toolbarConfig.title = res.name;
       this.collectionTreeNodes = res;
+      this.cdr.detectChanges();
       if (_.isEmpty(res.children)) {
-        // TODO: Call update questionSet APIs if children property empty
+        this.hideButton('submitCollection');
       }
     });
+  }
+
+  showButton(buttonType) {
+    const buttonIndex = _.findIndex(this.toolbarConfig.buttons, {type: buttonType});
+    this.toolbarConfig.buttons[buttonIndex].display = 'display';
+  }
+
+  hideButton(buttonType) {
+    const buttonIndex = _.findIndex(this.toolbarConfig.buttons, {type: buttonType});
+    this.toolbarConfig.buttons[buttonIndex].display = 'none';
   }
 
   toolbarEventListener(event) {
@@ -102,7 +114,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   saveCollection() {
-    this.telemetryService.start({ type: 'content', mode: 'play', pageid: '', duration: Number((1.23 / 1e3).toFixed(2)) });
     this.editorService.updateQuestionSetHierarchy()
       .pipe(map(data => _.get(data, 'result'))).subscribe(response => {
         this.treeService.replaceNodeId(response.identifiers);
