@@ -12,7 +12,7 @@
   </div>
 </div>
 
-<!-- <sui-modal [isClosable]="true" class="sb-modal" [isInverted]="true" (dismissed)="dismissImagePicker()"
+<sui-modal [isClosable]="true" class="sb-modal" [isInverted]="true" (dismissed)="dismissImagePicker()"
   *ngIf="showImagePicker" [size]="'normal'" [isFullScreen]="false" [mustScroll]="true" #modal>
   <div class="sb-modal-header">Select Image</div>
   <div class="sb-modal-content p-0">
@@ -81,7 +81,7 @@
     </sui-tabset>
   </div>
   <div class="sb-modal-actions">
-    <button (click)="addImageInEditor();"
+    <button (click)="addImageInEditor('one', 'two');"
       class="sb-btn sb-btn-primary sb-btn-normal"
       [ngClass]="{'sb-btn-primary': showAddButton, 'sb-btn-disabled': !showAddButton}">Add</button>
   </div>
@@ -94,8 +94,8 @@
     <sui-tabset>
       <div class="sb-tabset-menu mb-16">
         <a class="sb-item" suiTabHeader="1" (click)="showAddButton=false">Upload</a>
-        <a class="sb-item" (activate)="getMyVideos(0)" suiTabHeader="2" [isDisabled]="loading">My Video(s)</a>
-        <a class="sb-item" (activate)="getAllVideos(0)" suiTabHeader="3" [isDisabled]="loading">All Video(s)</a>
+        <a class="sb-item" (activate)="getMyVideos(0, 1)" suiTabHeader="2" [isDisabled]="loading">My Video(s)</a>
+        <a class="sb-item" (activate)="getAllVideos(0, 1)" suiTabHeader="3" [isDisabled]="loading">All Video(s)</a>
       </div>
       <div class="ui segment sb-tabset-segment m-0 pt-0" infiniteScroll [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="500" [scrollWindow]="false" suiTabContent="1">
@@ -256,4 +256,4 @@
       <button (click)="dismissImageUploadModal();" class="ui button">Cancel</button>
     </div>
   </div>
-</sui-modal> -->
+</sui-modal>
