@@ -6,4 +6,5 @@ export * from './helper/helper.service';
 export * from './editor-telemetry/editor-telemetry.service';
 export * from './util/util-service';
 export * from './player/player.service';
+export * from './public-data/public-data.service';
 

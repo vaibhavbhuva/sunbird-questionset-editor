@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DataService } from '../../services';
+import { DataService, PublicDataService } from '../../services';
 import { ServerResponse } from '../../interfaces';
-
+import * as _ from 'lodash-es';
+import { UUID } from 'angular2-uuid';
+import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionService {
-
-  constructor(public dataService: DataService) { }
+  public http: HttpClient;
+  constructor(public dataService: DataService, http: HttpClient, private publicDataService: PublicDataService) {
+    this.http = http;
+  }
 
   readQuestion(questionId) {
     const option = {
@@ -79,4 +83,69 @@ export class QuestionService {
     };
     return this.dataService.patch(req);
   }
+
+  getAssetMedia(req?: object) {
+    const reqParam = {
+      url: 'composite/v1/search',
+      data: {
+        request: {
+          filters: {
+            contentType: 'Asset',
+            compatibilityLevel: {
+              min: 1,
+              max: 2
+            },
+            status: ['Live'],
+          },
+          limit: 50,
+        }
+      }
+    };
+    reqParam.data.request = req ? _.merge({}, reqParam.data.request, req) : reqParam;
+    return this.dataService.post(reqParam);
+  }
+
+  createMediaAsset(req?: object) {
+    const reqParam = {
+      url: 'content/v3/create',
+      data: {
+        request: {
+          content: {
+            contentType: 'Asset',
+            language: ['English'],
+            code: UUID.UUID(), // TODO: UUID
+          }
+        }
+      }
+    };
+    reqParam.data.request = req ? _.merge({}, reqParam.data.request, req) : reqParam;
+    return this.publicDataService.post(reqParam);
+  }
+
+  uploadMedia(req, assetId: any) {
+    let reqParam = {
+      url: `content/v3/upload/${assetId}`,
+      data: req.data
+    };
+    reqParam = req ? _.merge({}, reqParam, req) : reqParam;
+    return this.publicDataService.post(reqParam);
+  }
+
+  generatePreSignedUrl(req, contentId: any) {
+    const reqParam = {
+      url: `content/v3/upload/url/${contentId}`,
+      data: {
+        request: req
+      }
+    };
+    return this.publicDataService.post(reqParam);
+  }
+
+  getVideo(videoId) {
+    const reqParam = {
+      url: `content/v3/read/${videoId}`
+    };
+    return this.publicDataService.get(reqParam);
+  }
+
 }

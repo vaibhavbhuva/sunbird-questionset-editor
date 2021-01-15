@@ -10,5 +10,17 @@
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
+    },
+    "/assets": {
+        "target": "http://localhost:3000/assets",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    },
+    "/action": {
+        "target": "http://localhost:3000/action",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
     }
 }

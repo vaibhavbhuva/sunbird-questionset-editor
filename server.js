@@ -4,7 +4,6 @@ var express = require('express'),
     proxy = require('express-http-proxy'),
     urlHelper = require('url');
 const latexService = require('./latexService.js')
-
 var app = express();
 
 app.set('port', 3000);
@@ -15,7 +14,7 @@ app.get("/latex/convert", latexService.convert)
 app.post("/latex/convert", bodyParser.json({ limit: '1mb' }), latexService.convert);
 
 
-app.use('/api', proxy('dock.sunbirded.org', {
+app.use(['/api','/assets','/action'], proxy('dock.sunbirded.org', {
     https: true,
     proxyReqPathResolver: function(req) {
         console.log('proxyReqPathResolver ',  urlHelper.parse(req.url).path);
@@ -30,7 +29,5 @@ app.use('/api', proxy('dock.sunbirded.org', {
         return proxyReqOpts;
     }
 }));
-
-
 
 http.createServer(app).listen(app.get('port'), 3000);
