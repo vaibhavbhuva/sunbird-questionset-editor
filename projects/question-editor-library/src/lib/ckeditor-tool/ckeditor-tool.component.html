@@ -1,9 +1,9 @@
 <div class="editorWrapper" [ngClass]="{'hasError': limitExceeded}">
-  <!-- <button type="button" data-tooltip="Add image" data-position="bottom center" data-variation="mini" data-inverted=""
+  <button type="button" data-tooltip="Add image" data-position="bottom center" data-variation="mini" data-inverted=""
     title="Add image" [disabled]="isAssetBrowserReadOnly || isEditorFocused" (click)="initializeImagePicker('question')"
     class="ui icon button insert-image-btn">
     <i class="image outline icon"></i>
-  </button> -->
+  </button>
   <textarea class="editor" #editor name="question" placeholder=""></textarea>
   <div *ngIf="setCharacterLimit > 0">
     <div class="characterCount">
@@ -94,8 +94,8 @@
     <sui-tabset>
       <div class="sb-tabset-menu mb-16">
         <a class="sb-item" suiTabHeader="1" (click)="showAddButton=false">Upload</a>
-        <a class="sb-item" (activate)="getMyVideos(0, 1)" suiTabHeader="2" [isDisabled]="loading">My Video(s)</a>
-        <a class="sb-item" (activate)="getAllVideos(0, 1)" suiTabHeader="3" [isDisabled]="loading">All Video(s)</a>
+        <a class="sb-item" (activate)="getMyVideos(0)" suiTabHeader="2" [isDisabled]="loading">My Video(s)</a>
+        <a class="sb-item" (activate)="getAllVideos(0)" suiTabHeader="3" [isDisabled]="loading">All Video(s)</a>
       </div>
       <div class="ui segment sb-tabset-segment m-0 pt-0" infiniteScroll [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="500" [scrollWindow]="false" suiTabContent="1">

@@ -1,11 +1,10 @@
 import { Component, OnInit, AfterViewInit, Output, Input, EventEmitter, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import ClassicEditor from '@project-sunbird/ckeditor-build-font';
 import { FineUploader } from 'fine-uploader';
-import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash-es';
-import { catchError, map} from 'rxjs/operators';
-import { throwError, Observable} from 'rxjs';
-// import { CbseProgramService } from '../../services';
+import { catchError, map } from 'rxjs/operators';
+import { throwError, Observable } from 'rxjs';
+import { QuestionService } from '../services';
 import MathText from '../../../../../src/assets/libs/mathEquation/plugin/mathTextPlugin.js';
 // import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
@@ -38,7 +37,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
   initialized = false;
   public assetProxyUrl = '/assets/public/';
   public lastImgResizeWidth;
-  constructor() { }
+  constructor(private questionService: QuestionService) { }
   assetConfig: any = {
     image: {
       size: '50',
@@ -88,28 +87,28 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
         ]
       },
       image: {
-        resizeEnabled : false,
+        resizeEnabled: false,
         resizeOptions: [
-            {
-                name: 'imageResize:original',
-                label: 'Original',
-                value: null
-            },
-            {
-              name: 'imageResize:25',
-              label: '25%',
-              value: '25'
-            },
-            {
-                name: 'imageResize:50',
-                label: '50%',
-                value: '50'
-            },
-            {
-                name: 'imageResize:75',
-                label: '75%',
-                value: '75'
-            }
+          {
+            name: 'imageResize:original',
+            label: 'Original',
+            value: null
+          },
+          {
+            name: 'imageResize:25',
+            label: '25%',
+            value: '25'
+          },
+          {
+            name: 'imageResize:50',
+            label: '50%',
+            value: '50'
+          },
+          {
+            name: 'imageResize:75',
+            label: '75%',
+            value: '75'
+          }
         ],
         toolbar: ['imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight'],
         styles: ['full', 'alignLeft', 'alignRight', 'alignCenter']
@@ -233,7 +232,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
     return result.toString();
   }
 
-  customImageResizer(editor)  {
+  customImageResizer(editor) {
     // Both the data and the editing pipelines are affected by this conversion.
     editor.conversion.for('downcast').add(dispatcher => {
       // Links are represented in the model as a "linkHref" attribute.
@@ -242,8 +241,8 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
         if (!conversionApi.consumable.consume(data.item, evt.name)) {
           return;
         }
-        const options = editor.config.get( 'image.resizeOptions' );
-        const isEnabled = editor.config.get( 'image.resizeEnabled' );
+        const options = editor.config.get('image.resizeOptions');
+        const isEnabled = editor.config.get('image.resizeEnabled');
         const sizeLables = options.map((item) => {
           return item.label;
         });
@@ -253,7 +252,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
         }
 
         if (!isEnabled && sizeLables.length > 0 && !sizeLables.includes(newImgWidthValue)) {
-          editor.execute( 'imageResize', { width: this.lastImgResizeWidth } );
+          editor.execute('imageResize', { width: this.lastImgResizeWidth });
           return evt.stop();
         }
 
@@ -350,30 +349,30 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
       this.myAssets.length = 0;
     }
     const req = {
-        filters: {
-          mediaType: ['image'],
-          createdBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448' // TODO:
-        },
-        offset
+      filters: {
+        mediaType: ['image'],
+        createdBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448' // TODO:
+      },
+      offset
     };
 
-    // this.cbseService.getAssetMedia(req).pipe(catchError(err => {
-    //   const errInfo = { errorMsg: 'Image search failed' };
-    //   return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-    // }))
-    // .subscribe((res) => {
-    //   _.map(res.result.content, (item) => {
-    //     if (item.downloadUrl) {
-    //       this.myAssets.push(item);
-    //     }
-    //   });
-    // });
+    this.questionService.getAssetMedia(req).pipe(catchError(err => {
+      const errInfo = { errorMsg: 'Image search failed' };
+      return throwError(errInfo);
+    }))
+      .subscribe((res) => {
+        _.map(res.result.content, (item) => {
+          if (item.downloadUrl) {
+            this.myAssets.push(item);
+          }
+        });
+      });
   }
 
   addImageInEditor(imageUrl, imageId) {
     const src = this.getMediaOriginURL(imageUrl);
     const baseUrl = (document.getElementById('portalBaseUrl') as HTMLInputElement)
-    ? (document.getElementById('portalBaseUrl') as HTMLInputElement).value : 'https://dock.sunbirded.org';
+      ? (document.getElementById('portalBaseUrl') as HTMLInputElement).value : 'https://dock.sunbirded.org';
     this.mediaobj = {
       id: imageId,
       type: 'image',
@@ -394,7 +393,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
   addVideoInEditor() {
     const videoData: any = _.cloneDeep(this.selectedVideo);
     videoData.src = this.getMediaOriginURL(videoData.downloadUrl);
-    videoData.thumbnail  = (videoData.thumbnail) && this.getMediaOriginURL(videoData.thumbnail);
+    videoData.thumbnail = (videoData.thumbnail) && this.getMediaOriginURL(videoData.thumbnail);
     this.showVideoPicker = false;
     this.showVideoUploadModal = false;
     this.videoDataOutput.emit(videoData);
@@ -412,28 +411,28 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
       offset
     };
 
-    // this.cbseService.getAssetMedia(req).pipe(catchError(err => {
-    //   const errInfo = { errorMsg: 'Image search failed' };
-    //   return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-    // }))
-    //   .subscribe((res) => {
-    //     _.map(res.result.content, (item) => {
-    //       if (item.downloadUrl) {
-    //         this.allImages.push(item);
-    //       }
-    //     });
-    //   });
+    this.questionService.getAssetMedia(req).pipe(catchError(err => {
+      const errInfo = { errorMsg: 'Image search failed' };
+      return throwError(errInfo);
+    }))
+      .subscribe((res) => {
+        _.map(res.result.content, (item) => {
+          if (item.downloadUrl) {
+            this.allImages.push(item);
+          }
+        });
+      });
   }
 
   /**
    * function to get videos
    * @param offset page no
    */
-  getMyVideos(offset, query) {
+  getMyVideos(offset, query?) {
     if (offset === 0) {
       this.myAssets.length = 0;
     }
-    const req = {
+    const req: any = {
       filters: {
         mediaType: ['video'],
         createdBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448'
@@ -441,51 +440,51 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
       offset
     };
 
-    // if (query) {
-    //   req.query = query;
-    // }
+    if (query) {
+      req.query = query;
+    }
 
-    // this.cbseService.getAssetMedia(req).pipe(catchError(err => {
-    //   const errInfo = { errorMsg: 'Video search failed' };
-    //   return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-    // }))
-    //   .subscribe((res) => {
-    //     this.assetsCount = res.result.count;
-    //     _.map(res.result.content, (item) => {
-    //       if (item.downloadUrl) {
-    //         this.myAssets.push(item);
-    //       }
-    //     });
-    //   });
+    this.questionService.getAssetMedia(req).pipe(catchError(err => {
+      const errInfo = { errorMsg: 'Video search failed' };
+      return throwError(errInfo);
+    }))
+      .subscribe((res) => {
+        this.assetsCount = res.result.count;
+        _.map(res.result.content, (item) => {
+          if (item.downloadUrl) {
+            this.myAssets.push(item);
+          }
+        });
+      });
   }
 
-getAllVideos(offset, query) {
-  if (offset === 0) {
-    this.allVideos.length = 0;
-  }
-  const req = {
-    filters: {
-      mediaType: ['video'],
-    },
-    offset
-  };
-  // if (query) {
-  //   req.query = query;
-  // }
+  getAllVideos(offset, query?) {
+    if (offset === 0) {
+      this.allVideos.length = 0;
+    }
+    const req: any = {
+      filters: {
+        mediaType: ['video'],
+      },
+      offset
+    };
+    if (query) {
+      req.query = query;
+    }
 
-  // this.cbseService.getAssetMedia(req).pipe(catchError(err => {
-  //   const errInfo = { errorMsg: 'Video search failed' };
-  //   return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-  // }))
-  //   .subscribe((res) => {
-  //     this.assetsCount = res.result.count;
-  //     _.map(res.result.content, (item) => {
-  //       if (item.downloadUrl) {
-  //         this.allVideos.push(item);
-  //       }
-  //     });
-  //   });
-}
+    this.questionService.getAssetMedia(req).pipe(catchError(err => {
+      const errInfo = { errorMsg: 'Video search failed' };
+      return throwError(errInfo);
+    }))
+      .subscribe((res) => {
+        this.assetsCount = res.result.count;
+        _.map(res.result.content, (item) => {
+          if (item.downloadUrl) {
+            this.allVideos.push(item);
+          }
+        });
+      });
+  }
 
   /**
    * function to lazy load my images
@@ -546,26 +545,26 @@ getAllVideos(offset, query) {
       this.imageUploadLoader = true;
       // reader.onload = (uploadEvent: any) => {
       const req = this.generateAssetCreateRequest(fileName, fileType, 'image');
-      // this.cbseService.createMediaAsset(req).pipe(catchError(err => {
-      //   this.imageUploadLoader = false;
-      //   const errInfo = { errorMsg: 'Image upload failed' };
-      //   return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-      // })).subscribe((res) => {
-      //   const imgId = res.result.node_id;
-      //   const request = {
-      //     data: formData
-      //   };
-      //   this.cbseService.uploadMedia(request, imgId).pipe(catchError(err => {
-      //     this.imageUploadLoader = false;
-      //     const errInfo = { errorMsg: 'Image upload failed' };
-      //     return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-      //   })).subscribe((response) => {
-      //     this.imageUploadLoader = false;
-      //     this.addImageInEditor(response.result.content_url, response.result.node_id);
-      //     this.showImagePicker = false;
-      //     this.showImageUploadModal = false;
-      //   });
-      // });
+      this.questionService.createMediaAsset(req).pipe(catchError(err => {
+          this.imageUploadLoader = false;
+          const errInfo = { errorMsg: 'Image upload failed' };
+          return throwError(errInfo);
+        })).subscribe((res) => {
+          const imgId = res.result.node_id;
+          const request = {
+            data: formData
+          };
+          this.questionService.uploadMedia(request, imgId).pipe(catchError(err => {
+            this.imageUploadLoader = false;
+            const errInfo = { errorMsg: 'Image upload failed' };
+            return throwError(errInfo);
+          })).subscribe((response) => {
+            this.imageUploadLoader = false;
+            this.addImageInEditor(response.result.content_url, response.result.node_id);
+            this.showImagePicker = false;
+            this.showImageUploadModal = false;
+          });
+      });
       reader.onerror = (error: any) => { };
     }
   }
@@ -579,38 +578,38 @@ getAllVideos(offset, query) {
     this.showErrorMsg = false;
     if (!this.showErrorMsg) {
       const req = this.generateAssetCreateRequest(this.uploader.getName(0), this.uploader.getFile(0).type, 'video');
-      // this.cbseService.createMediaAsset(req).pipe(catchError(err => {
-      //   this.loading = false;
-      //   this.isClosable = true;
-      //   const errInfo = { errorMsg: ' Unable to create an Asset' };
-      //   return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-      // })).subscribe((res) => {
-      //   const contentId = res.result.node_id;
-      //   const request = {
-      //     content: {
-      //       fileName: this.uploader.getName(0)
-      //     }
-      //   };
-      //   this.cbseService.generatePreSignedUrl(request, contentId).pipe(catchError(err => {
-      //     const errInfo = { errorMsg: 'Unable to get pre_signed_url and Content Creation Failed, Please Try Again' };
-      //     this.loading = false;
-      //     this.isClosable = true;
-      //     return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-      //   })).subscribe((response) => {
-      //     const signedURL = response.result.pre_signed_url;
-      //     const config = {
-      //       processData: false,
-      //       contentType: 'Asset',
-      //       headers: {
-      //         'x-ms-blob-type': 'BlockBlob'
-      //       }
-      //     };
-      //     this.uploadToBlob(signedURL, this.uploader.getFile(0), config).subscribe(() => {
-      //       const fileURL = signedURL.split('?')[0];
-      //       this.updateContentWithURL(fileURL, this.uploader.getFile(0).type, contentId);
-      //     });
-      //   });
-      // });
+      this.questionService.createMediaAsset(req).pipe(catchError(err => {
+        this.loading = false;
+        this.isClosable = true;
+        const errInfo = { errorMsg: ' Unable to create an Asset' };
+        return throwError(errInfo);
+      })).subscribe((res) => {
+        const contentId = res.result.node_id;
+        const request = {
+          content: {
+            fileName: this.uploader.getName(0)
+          }
+        };
+        this.questionService.generatePreSignedUrl(request, contentId).pipe(catchError(err => {
+          const errInfo = { errorMsg: 'Unable to get pre_signed_url and Content Creation Failed, Please Try Again' };
+          this.loading = false;
+          this.isClosable = true;
+          return throwError(errInfo);
+        })).subscribe((response) => {
+          const signedURL = response.result.pre_signed_url;
+          const config = {
+            processData: false,
+            contentType: 'Asset',
+            headers: {
+              'x-ms-blob-type': 'BlockBlob'
+            }
+          };
+          this.uploadToBlob(signedURL, this.uploader.getFile(0), config).subscribe(() => {
+            const fileURL = signedURL.split('?')[0];
+            this.updateContentWithURL(fileURL, this.uploader.getFile(0).type, contentId);
+          });
+        });
+      });
     }
   }
 
@@ -620,21 +619,21 @@ getAllVideos(offset, query) {
         name: fileName,
         mediaType,
         mimeType: fileType,
-        createdBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448',
-        creator: `Vaibhav`,
+        createdBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448', // TODO:
+        creator: `Vaibhav`, // TODO:
         channel: this.editorConfig.channel || 'sunbird'
       }
     };
   }
 
-  // uploadToBlob(signedURL, file, config): Observable<any> {
-  //   return this.actionService.http.put(signedURL, file, config).pipe(catchError(err => {
-  //     const errInfo = { errorMsg: 'Unable to upload to Blob and Content Creation Failed, Please Try Again' };
-  //     this.isClosable = true;
-  //     this.loading = false;
-  //     return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-  //   }), map(data => data));
-  // }
+  uploadToBlob(signedURL, file, config): Observable<any> {
+    return this.questionService.http.put(signedURL, file, config).pipe(catchError(err => {
+      const errInfo = { errorMsg: 'Unable to upload to Blob and Content Creation Failed, Please Try Again' };
+      this.isClosable = true;
+      this.loading = false;
+      return throwError(errInfo);
+    }), map(data => data));
+  }
 
   updateContentWithURL(fileURL, mimeType, contentId) {
     const data = new FormData();
@@ -650,33 +649,33 @@ getAllVideos(offset, query) {
       data,
       param: config
     };
-    // this.cbseService.uploadMedia(option, contentId).pipe(catchError(err => {
-    //   const errInfo = { errorMsg: 'Unable to update pre_signed_url with Content Id and Content Creation Failed, Please Try Again' };
-    //   this.isClosable = true;
-    //   this.loading = false;
-    //   return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-    // })).subscribe(res => {
-    //   // Read upload video data
-    //   this.getUploadVideo(res.result.node_id);
-    // });
+    this.questionService.uploadMedia(option, contentId).pipe(catchError(err => {
+      const errInfo = { errorMsg: 'Unable to update pre_signed_url with Content Id and Content Creation Failed, Please Try Again' };
+      this.isClosable = true;
+      this.loading = false;
+      return throwError(errInfo);
+    })).subscribe(res => {
+      // Read upload video data
+      this.getUploadVideo(res.result.node_id);
+    });
   }
 
   getUploadVideo(videoId) {
-  //   this.cbseService.getVideo(videoId).pipe(map((data: any) => data.result.content), catchError(err => {
-  //     const errInfo = { errorMsg: 'Unable to read the Video, Please Try Again' };
-  //     this.loading = false;
-  //     this.isClosable = true;
-  //     this.loading = false;
-  //     this.isClosable = true;
-  //     return throwError(this.cbseService.apiErrorHandling(err, errInfo));
-  // })).subscribe(res => {
-  //     this.toasterService.success('Asset Successfully Uploaded...');
-  //     this.selectedVideo = res;
-  //     this.showAddButton = true;
-  //     this.loading = false;
-  //     this.isClosable = true;
-  //     this.addVideoInEditor();
-  //   });
+      this.questionService.getVideo(videoId).pipe(map((data: any) => data.result.content), catchError(err => {
+        const errInfo = { errorMsg: 'Unable to read the Video, Please Try Again' };
+        this.loading = false;
+        this.isClosable = true;
+        this.loading = false;
+        this.isClosable = true;
+        return throwError(errInfo);
+    })).subscribe(res => {
+        alert('Asset Successfully Uploaded...');
+        this.selectedVideo = res;
+        this.showAddButton = true;
+        this.loading = false;
+        this.isClosable = true;
+        this.addVideoInEditor();
+      });
   }
 
   searchMyVideo(event) {
@@ -715,8 +714,8 @@ getAllVideos(offset, query) {
 
   getMediaOriginURL(src) {
     const replaceText = this.assetProxyUrl;
-    const awsS3Urls = ['https://s3.ap-south-1.amazonaws.com/ekstep-public-qa/','https://ekstep-public-qa.s3-ap-south-1.amazonaws.com/',
-    'https://dockstorage.blob.core.windows.net/sunbird-content-dock/'];
+    const awsS3Urls = ['https://s3.ap-south-1.amazonaws.com/ekstep-public-qa/', 'https://ekstep-public-qa.s3-ap-south-1.amazonaws.com/',
+      'https://dockstorage.blob.core.windows.net/sunbird-content-dock/'];
     _.forEach(awsS3Urls, url => {
       if (src.indexOf(url) !== -1) {
         src = src.replace(url, replaceText);
