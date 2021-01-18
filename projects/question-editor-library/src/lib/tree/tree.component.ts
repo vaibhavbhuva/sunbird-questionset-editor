@@ -3,7 +3,7 @@ import 'jquery.fancytree';
 import * as _ from 'lodash-es';
 import { UUID } from 'angular2-uuid';
 import { editorConfig } from '../editor.config';
-import { TreeService } from '../services';
+import { TreeService, EditorTelemetryService } from '../services';
 declare var $: any;
 
 @Component({
@@ -19,7 +19,7 @@ export class TreeComponent implements OnInit, AfterViewInit {
   config: any = editorConfig;
   public rootNode: any;
 
-  constructor(private treeService: TreeService) { }
+  constructor(private treeService: TreeService, private telemetryService: EditorTelemetryService) { }
 
   ngOnInit() {
     this.initialize();
@@ -97,6 +97,7 @@ export class TreeComponent implements OnInit, AfterViewInit {
         // $(this.tree.nativeElement).fancytree('getTree').getNodeByKey('_2').setActive();
       },
       click: (event, data): boolean => {
+        this.telemetryService.interact({ edata: this.getTelemetryInteractEdata()});
         this.tree.nativeElement.click();
         const node = data.node;
         this.treeEventEmitter.emit({ type: 'nodeSelect', data: node });
@@ -114,6 +115,15 @@ export class TreeComponent implements OnInit, AfterViewInit {
       }
     };
     return options;
+  }
+
+  getTelemetryInteractEdata() {
+    return {
+      id: 'questionset_toc',
+      type: 'click',
+      subtype: 'launch',
+      pageid: this.telemetryService.telemetryPageId
+    };
   }
 
   addChild() {

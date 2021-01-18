@@ -27,7 +27,7 @@ export class TelemetryInteractDirective {
 
   appTelemetryInteractData: IInteractEventInput;
   public telemetryService: EditorTelemetryService;
-  @Input() telemetryInteractEdata: IInteractEventEdata;
+  @Input() telemetryInteractEdata: any;
 
   @HostListener('click', ['$event'])
 

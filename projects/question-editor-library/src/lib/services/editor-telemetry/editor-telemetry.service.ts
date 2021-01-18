@@ -2,8 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { CsTelemetryModule } from '@project-sunbird/client-services/telemetry';
 import { EditorConfig, Context } from '../../question-editor-library-interface';
 import { UtilService } from '../index';
-
-
+import * as _ from 'lodash-es';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,6 +18,7 @@ export class EditorTelemetryService {
   private sid: string;
   private uid: string;
   private rollup: any;
+  private _telemetryPageId: any;
 
   constructor(
     public utilService: UtilService
@@ -70,9 +70,23 @@ export class EditorTelemetryService {
     };
   }
 
-  // public onTelemetry(callback: () => void) {
+  set telemetryPageId(value: any) {
+    this._telemetryPageId = value;
+  }
 
-  // }
+  get telemetryPageId() {
+    return this._telemetryPageId;
+  }
+
+  getTelemetryInteractEdata(id: string, type: string, subtype: string, pageid: string, extra?: any) {
+    return _.omitBy({
+      id,
+      type,
+      subtype,
+      pageid,
+      extra
+    }, _.isUndefined);
+  }
 
   public start(edata) {
     CsTelemetryModule.instance.telemetryService.raiseStartTelemetry(
@@ -96,9 +110,6 @@ export class EditorTelemetryService {
     });
   }
 
-  public heartBeat(data) {
-    CsTelemetryModule.instance.playerTelemetryService.onHeartBeatEvent(data, {});
-  }
 
   public impression(edata) {
     CsTelemetryModule.instance.telemetryService.raiseImpressionTelemetry({

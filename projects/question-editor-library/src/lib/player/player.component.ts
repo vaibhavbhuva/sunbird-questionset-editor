@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 import * as _ from 'lodash-es';
 import { ServerResponse } from '../interfaces';
 import { data1 } from './quml-library-data';
-import { QuestionService } from '../services';
+import { QuestionService, EditorTelemetryService, EditorService } from '../services';
 @Component({
   selector: 'lib-player',
   templateUrl: './player.component.html',
@@ -15,7 +15,8 @@ export class PlayerComponent implements OnInit, OnChanges {
   questionId: string;
   showPlayerPreview = false;
 
-  constructor(private questionService: QuestionService) { }
+  constructor(private questionService: QuestionService, public telemetryService: EditorTelemetryService,
+              public editorService: EditorService) { }
 
   ngOnInit() {}
 

@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as _ from 'lodash-es';
 import { UUID } from 'angular2-uuid';
 import { EditorConfig } from '../question-editor-library-interface';
 import { questionToolbarConfig, questionEditorConfig } from '../editor.config';
 import { McqForm, ServerResponse } from '../interfaces';
-import { EditorService, QuestionService, PlayerService } from '../services';
+import { EditorService, QuestionService, PlayerService, EditorTelemetryService } from '../services';
 
 @Component({
   selector: 'lib-question',
@@ -15,7 +15,7 @@ import { EditorService, QuestionService, PlayerService } from '../services';
 export class QuestionComponent implements OnInit {
   QumlPlayerConfig: any = {};
   @Input() editorConfig: EditorConfig | undefined;
-  toolbarConfig: any = questionToolbarConfig;
+  toolbarConfig: any;
   public ckeditorConfig: any = questionEditorConfig;
   public editorState: any = {};
   public showPreview = false;
@@ -50,20 +50,28 @@ export class QuestionComponent implements OnInit {
   public questionData: any = {};
   validQuestionData = false;
   questionPrimaryCategory: string;
+  telemetryPageId: 'question';
+  editContentIndex;
+  previewContentIndex;
 
   constructor(
-    private questionService: QuestionService, private editorService: EditorService,
-    public router: Router, public playerService: PlayerService, private cdr: ChangeDetectorRef
+    private questionService: QuestionService, private editorService: EditorService, public telemetryService: EditorTelemetryService,
+    private router: Router, public playerService: PlayerService
   ) { }
 
   ngOnInit() {
+    this.toolbarConfig = questionToolbarConfig;
+    this.editContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'editContent'});
+    this.previewContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'previewContent'});
     this.questionData = this.editorService.selectedChildren;
     this.questionPrimaryCategory = this.questionData.primaryCategory;
-    this.questionInteractionType = 'choice';
-    this.questionId = 'do_113193462438895616139'; // do_113193462438895616139 do_11319194338113126419
+    this.questionInteractionType = 'default';
+    this.questionId = 'do_113193462438895616139';
     this.questionSetId = 'do_113193433773948928111';
     this.initialize();
     this.solutionUUID = UUID.UUID();
+    this.telemetryService.initializeTelemetry(this.editorConfig);
+    this.telemetryService.telemetryPageId = this.telemetryPageId;
   }
 
   initialize() {
@@ -148,8 +156,6 @@ export class QuestionComponent implements OnInit {
   }
 
   toolbarEventListener(event) {
-    const editContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'editContent'});
-    const previewContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'previewContent'});
     switch (event.button.type) {
       case 'saveContent':
         this.saveContent();
@@ -161,24 +167,17 @@ export class QuestionComponent implements OnInit {
         this.handleRedirectToQuestionset();
         break;
       case 'previewContent':
-        this.toolbarConfig.buttons[editContentIndex].display = 'block';
-        this.toolbarConfig.buttons[previewContentIndex].display = 'none';
         this.previewContent();
         break;
         case 'editContent':
-          this.refreshEditor();
-          this.toolbarConfig.buttons[previewContentIndex].display = 'block';
-          this.toolbarConfig.buttons[editContentIndex].display = 'none';
+          this.toolbarConfig.buttons[this.previewContentIndex].display = 'block';
+          this.toolbarConfig.buttons[this.editContentIndex].display = 'none';
           this.showPreview = false;
           this.showLoader = false;
           break;
       default:
         break;
     }
-  }
-
-  private refreshEditor() {
-    this.cdr.detectChanges();
   }
 
   handleRedirectToQuestionset() {
@@ -190,6 +189,13 @@ export class QuestionComponent implements OnInit {
   }
 
   saveContent() {
+    this.validateQuestionData();
+    if (this.showFormError === false) {
+      this.saveQuestion();
+    }
+  }
+
+  validateQuestionData() {
 
     if ([undefined, ''].includes(this.editorState.question)) {
       this.showFormError = true;
@@ -217,8 +223,6 @@ export class QuestionComponent implements OnInit {
         this.showFormError = false;
       }
     }
-    this.validQuestionData = true;
-    this.saveQuestion();
   }
 
   redirectToQuestionset() {
@@ -226,7 +230,6 @@ export class QuestionComponent implements OnInit {
     setTimeout(() => {
       this.router.navigateByUrl(`create/questionSet/${this.questionSetId}`);
     }, 100);
-
   }
 
   editorDataHandler(event, type?) {
@@ -379,7 +382,7 @@ export class QuestionComponent implements OnInit {
             const questionId = response.result.identifiers.questionId;
             alert('Question is created');
             // tslint:disable-next-line:max-line-length
-            this.router.navigate([`create/questionSet/${this.questionSetId}/question`], { queryParams: { type: this.questionInteractionType, questionId } });
+            this.router.navigate([`create/questionSet/${this.questionSetId}`]);
           }
         },
         (err: ServerResponse) => {
@@ -395,7 +398,7 @@ export class QuestionComponent implements OnInit {
           if (response.result) {
             alert('Question is updated');
             // tslint:disable-next-line:max-line-length
-            this.router.navigate([`create/questionSet/${this.questionSetId}/question`], { queryParams: { type: this.questionInteractionType, questionId } });
+            this.router.navigate([`create/questionSet/${this.questionSetId}`]);
           }
         },
         (err: ServerResponse) => {
@@ -404,9 +407,11 @@ export class QuestionComponent implements OnInit {
   }
 
  async previewContent() {
-   await this.saveContent();
-   if (this.validQuestionData === true) {
+  await this.validateQuestionData();
+  if (this.showFormError === false) {
     await this.setQumlData();
+    this.toolbarConfig.buttons[this.editContentIndex].display = 'block';
+    this.toolbarConfig.buttons[this.previewContentIndex].display = 'none';
     this.showPreview = true;
    }
   }
@@ -418,16 +423,6 @@ export class QuestionComponent implements OnInit {
     this.QumlPlayerConfig.context.cdata = []; // TODO::
     this.QumlPlayerConfig.context.pdata = []; // TODO::
     this.QumlPlayerConfig.data = this.questionSetHierarchy;
-
-    // Added temp
-    this.QumlPlayerConfig.data.allowAnonymousAccess = true;
-    this.QumlPlayerConfig.data.allowSkip = true;
-    this.QumlPlayerConfig.data.requiresSubmit = true;
-    this.QumlPlayerConfig.data.showFeedback = true;
-    this.QumlPlayerConfig.data.showSolutions = true;
-    this.QumlPlayerConfig.data.showTimer = true;
-    this.QumlPlayerConfig.data.shuffle = true;
-
     this.QumlPlayerConfig.data.totalQuestions = 1;
     this.QumlPlayerConfig.data.maxQuestions = this.QumlPlayerConfig.data.totalQuestions;
     this.QumlPlayerConfig.data.maxScore = this.QumlPlayerConfig.data.totalQuestions;
@@ -448,15 +443,17 @@ export class QuestionComponent implements OnInit {
     let index;
     if (!_.isUndefined(questionId)) {
       // tslint:disable-next-line:only-arrow-functions
-        index = _.findIndex(hierarchyChildNodes, function (el) {
+        index = _.findIndex(hierarchyChildNodes, function(el) {
       return el === questionId;
       });
     } else {
       index = hierarchyChildNodes.length;
     }
-    const question = `Q${(index + 1).toString()}`;
-    let questionTitle = '';
-    questionTitle = `${question}  |  ${this.questionPrimaryCategory}`;
+    const question = `Q${(index + 1).toString()} | `;
+    let questionTitle = question;
+    if (!_.isUndefined(this.questionPrimaryCategory)) {
+      questionTitle = question + this.questionPrimaryCategory;
+    }
     this.toolbarConfig.title = questionTitle;
   }
 

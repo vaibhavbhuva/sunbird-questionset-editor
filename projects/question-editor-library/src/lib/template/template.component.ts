@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, Input, EventEmitter } from '@angular/core';
 import * as _ from 'lodash-es';
+import { EditorTelemetryService } from '../services';
 
 @Component({
   selector: 'lib-template',
@@ -14,7 +15,7 @@ export class TemplateComponent implements OnInit, OnDestroy {
   public showButton = false;
   public templateSelected;
 
-  constructor() { }
+  constructor(public telemetryService: EditorTelemetryService) { }
 
   ngOnInit() { }
 

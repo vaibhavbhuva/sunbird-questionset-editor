@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash-es';
-import { TreeService, HelperService } from '../services';
+import { TreeService, HelperService, EditorTelemetryService, EditorService } from '../services';
 import { formConfig } from './formConfig';
 
 @Component({
@@ -12,7 +12,8 @@ export class QuestionSetComponent implements OnInit {
   @Input() questionSetMetadata: any;
   @Output() toolbarEmitter = new EventEmitter<any>();
   config = formConfig;
-  constructor(private treeService: TreeService, private helperService: HelperService) { }
+  constructor(private treeService: TreeService, private helperService: HelperService, public telemetryService: EditorTelemetryService,
+              public editorService: EditorService) { }
 
   ngOnInit() {
     this.prepareFormConfiguration();

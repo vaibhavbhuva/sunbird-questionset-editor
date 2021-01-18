@@ -24,6 +24,6 @@
     "@project-sunbird/telemetry-sdk": "0.0.26"
   },
   "dependencies": {
-    "v-dynamic-forms": "0.0.1-beta.24"
+    "v-dynamic-forms": "0.0.1-beta.25"
   }
 }

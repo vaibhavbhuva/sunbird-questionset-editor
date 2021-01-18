@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-
+import { EditorTelemetryService } from '../services';
 @Component({
   selector: 'lib-header',
   templateUrl: './header.component.html',
@@ -10,7 +10,7 @@ export class HeaderComponent implements OnInit {
   @Output() toolbarEmitter = new EventEmitter<any>();
   public preview = false;
 
-  constructor() { }
+  constructor(public telemetryService: EditorTelemetryService) {}
 
   ngOnInit() { }
 

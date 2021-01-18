@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as _ from 'lodash-es';
 import {McqQuestionTemplate} from '../editor.config';
+import { EditorTelemetryService } from '../services';
 @Component({
   selector: 'lib-options',
   templateUrl: './options.component.html',
@@ -16,7 +17,7 @@ export class OptionsComponent implements OnInit {
   public setImageLimit = 1;
   public templateType = 'mcq-vertical';
   public mcqTemplateConfig: any = McqQuestionTemplate;
-  constructor() { }
+  constructor(public telemetryService: EditorTelemetryService) { }
 
   ngOnInit() {
     if (!_.isUndefined(this.editorState.templateId)) {

@@ -12,7 +12,9 @@
   <div class="d-flex sb-mcq-item mb-15" *ngFor="let option of editorState.options; let i = index">
     <div class="sb-w-85 sb-ckeditor relative">
       <button [disabled]="editorState.options.length < 3" class="sb-btn sb-ckeditor-close absolute"
-        (click)="editorState.deleteOption(i);editorDataHandler($event);">
+        (click)="editorState.deleteOption(i);editorDataHandler($event);"
+        libTelemetryInteract
+        [telemetryInteractEdata]="telemetryService.getTelemetryInteractEdata('delete_option','click','submit',telemetryService.telemetryPageId)">
         <i class="icon close"></i>
       </button>
       <lib-ckeditor-tool (editorDataOutput)="option.body = $event.body; option.length = $event.length; editorDataHandler($event)"
@@ -28,14 +30,18 @@
     </div>
     <div class="sb-checkbox sb-checkbox-primary pl-10" [class.selected]="editorState.answer === i.toString()">
       <input type="radio" id="answer_{{ i + 1 }}" name="example" value="{{ i }}"  (change)="editorDataHandler($event);"
-      [(ngModel)]="editorState.answer" [ngModelOptions]="{ standalone: true }" [checked]="editorState.answer === i.toString()" />
+      [(ngModel)]="editorState.answer" [ngModelOptions]="{ standalone: true }" [checked]="editorState.answer === i.toString()"
+      libTelemetryInteract
+      [telemetryInteractEdata]="telemetryService.getTelemetryInteractEdata('mark_as_right_anwser','click',undefined,telemetryService.telemetryPageId,{answer:i.toString()})" />
       <label for="answer_{{ i + 1 }}" class="mr-0 fs-0-785">Correct answer</label>
     </div>
   </div>
   <div class="d-flex">
     <button *ngIf="editorState.options.length < 4"
-class="sb-btn sb-btn-outline-primary sb-btn-xs sb-left-icon-btn text-inherit b-0 bg-none no-hover pl-0"
-(click)="editorState.addOptions();editorDataHandler($event);">
+      class="sb-btn sb-btn-outline-primary sb-btn-xs sb-left-icon-btn text-inherit b-0 bg-none no-hover pl-0"
+      (click)="editorState.addOptions();editorDataHandler($event);"
+      libTelemetryInteract
+      [telemetryInteractEdata]="telemetryService.getTelemetryInteractEdata('add_option','click','submit',telemetryService.telemetryPageId)" >
       <i class="plus circle icon fs-1-286 pull-left mr-0"></i><span class="sb-line-height-24">Add option</span>
     </button>
   </div>

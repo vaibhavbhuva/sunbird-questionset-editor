@@ -18,6 +18,8 @@ export class EditorService {
   private _selectedChildren: SelectedChildren = {};
   private _hierarchyConfig: any;
   public questionStream$ = new Subject<any>();
+  private _editorMode = 'create';
+
 
   constructor(public treeService: TreeService, private dataService: DataService) { }
 
@@ -43,6 +45,14 @@ export class EditorService {
 
   get hierarchyConfig() {
     return this._hierarchyConfig;
+  }
+
+  set editorMode(mode) {
+    this._editorMode = mode;
+  }
+
+  get editorMode() {
+    return this._editorMode;
   }
 
   public getQuestionSetHierarchy(identifier: string) {
@@ -72,6 +82,30 @@ export class EditorService {
   public sendQuestionSetForReview(identifier: string): Observable<any> {
     const req = {
       url: `questionset/v1/review/${identifier}`,
+      data: {
+        request : {
+            questionSet: {}
+        }
+    }
+    };
+    return this.dataService.post(req);
+  }
+
+  public publishQuestionSet(identifier: string): Observable<any> {
+    const req = {
+      url: `questionset/v1/publish/${identifier}`,
+      data: {
+        request : {
+            questionSet: {}
+        }
+    }
+    };
+    return this.dataService.post(req);
+  }
+
+  public rejectQuestionSet(identifier: string): Observable<any> {
+    const req = {
+      url: `questionset/v1/reject/${identifier}`,
       data: {
         request : {
             questionSet: {}

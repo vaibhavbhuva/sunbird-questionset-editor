@@ -132,7 +132,6 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngAfterViewInit() {
     this.initializeEditors();
-
   }
 
   initiateUploadModal() {
