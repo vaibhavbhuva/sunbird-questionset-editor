@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash-es';
 import { UUID } from 'angular2-uuid';
 import { EditorConfig } from '../question-editor-library-interface';
@@ -56,25 +56,28 @@ export class QuestionComponent implements OnInit {
 
   constructor(
     private questionService: QuestionService, private editorService: EditorService, public telemetryService: EditorTelemetryService,
-    private router: Router, public playerService: PlayerService
-  ) { }
+    private router: Router, public playerService: PlayerService, private activatedRoute: ActivatedRoute
+  ) {
+    this.questionData = this.editorService.selectedChildren;
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.questionInteractionType = params.type;
+      this.questionId = params.questionId;
+      this.questionPrimaryCategory = this.questionData.primaryCategory;
+    });
+   }
 
   ngOnInit() {
     this.toolbarConfig = questionToolbarConfig;
     this.editContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'editContent'});
     this.previewContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'previewContent'});
-    this.questionData = this.editorService.selectedChildren;
-    this.questionPrimaryCategory = this.questionData.primaryCategory;
-    this.questionInteractionType = 'default';
-    this.questionId = 'do_113193462438895616139';
-    this.questionSetId = 'do_113193433773948928111';
-    this.initialize();
     this.solutionUUID = UUID.UUID();
     this.telemetryService.initializeTelemetry(this.editorConfig);
     this.telemetryService.telemetryPageId = this.telemetryPageId;
+    this.initialize();
   }
 
   initialize() {
+    this.questionSetId = _.get(this.activatedRoute, 'snapshot.params.questionSetId');
     this.editorService.getQuestionSetHierarchy(this.questionSetId).
       subscribe((response) => {
         this.questionSetHierarchy = response;

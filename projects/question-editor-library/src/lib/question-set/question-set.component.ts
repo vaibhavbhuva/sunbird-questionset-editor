@@ -67,6 +67,9 @@ export class QuestionSetComponent implements OnInit {
           break;
       }
 
+      if (this.editorService.editorMode === 'review') {
+          _.set(field, 'editable', false);
+      }
     });
   }
 
