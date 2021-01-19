@@ -27,7 +27,7 @@ import { TelemetryInteractDirective } from './directives';
   TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent,
   TelemetryInteractDirective],
   imports: [
-    CommonModule, FormsModule, RouterModule.forRoot([]), CommonFormElementsModule, InfiniteScrollModule,
+    CommonModule, FormsModule, RouterModule.forChild([]), CommonFormElementsModule, InfiniteScrollModule,
     HttpClientModule, SuiModule,  QumlLibraryModule, CarouselModule.forRoot()
   ],
   exports: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent]

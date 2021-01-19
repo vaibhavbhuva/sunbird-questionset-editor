@@ -34,7 +34,6 @@
               "src/assets/lib/semantic/semantic.min.css",
               "src/assets/styles/styles.scss",
               "./node_modules/katex/dist/katex.min.css"
-
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

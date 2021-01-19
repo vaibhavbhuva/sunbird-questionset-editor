@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap, mergeMap, filter, first, skipWhile } from 'rxjs/operators';
 import * as _ from 'lodash-es';
-import { DataService } from '../index';
+import { PublicDataService } from '../index';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +10,14 @@ import { DataService } from '../index';
 export class HelperService {
   private _availableLicenses: Array<any>;
   private _channelData: any;
-  constructor(public dataService: DataService) { }
+  constructor(private publicDataService: PublicDataService) { }
 
   initialize() {
     this.getLicenses().subscribe();
   }
   getLicenses(): Observable<any> {
     const req = {
-      url: `composite/v1/search`,
+      url: `composite/v3/search`,
       data: {
         request: {
           filters: {
@@ -27,7 +27,7 @@ export class HelperService {
         }
       }
     };
-    return this.dataService.post(req).pipe(map((res: any) => {
+    return this.publicDataService.post(req).pipe(map((res: any) => {
       return res.result;
     }), tap((data: any) => this._availableLicenses = _.get(data, 'license')), catchError(err => {
       const errInfo = { errorMsg: 'search failed' };
