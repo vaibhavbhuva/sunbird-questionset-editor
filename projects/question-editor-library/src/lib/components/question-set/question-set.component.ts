@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash-es';
-import { TreeService, HelperService, EditorTelemetryService, EditorService } from '../services';
+import { TreeService, HelperService, EditorTelemetryService, EditorService } from '../../services';
 import { formConfig } from './formConfig';
 
 @Component({

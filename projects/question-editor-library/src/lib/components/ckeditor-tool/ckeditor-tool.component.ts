@@ -4,8 +4,8 @@ import { FineUploader } from 'fine-uploader';
 import * as _ from 'lodash-es';
 import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
-import { QuestionService } from '../services';
-import MathText from '../../../../../src/assets/libs/mathEquation/plugin/mathTextPlugin.js';
+import { QuestionService } from '../../services';
+import MathText from '../../../../../../src/assets/libs/mathEquation/plugin/mathTextPlugin.js';
 // import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 

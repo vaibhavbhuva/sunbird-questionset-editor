@@ -18,13 +18,11 @@ export class EditorTelemetryService {
   private sid: string;
   private uid: string;
   private rollup: any;
+  private env: string;
+  // tslint:disable-next-line:variable-name
   private _telemetryPageId: any;
 
-  constructor(
-    public utilService: UtilService
-  ) {
-
-  }
+  constructor( public utilService: UtilService ) {}
 
   initializeTelemetry(config: EditorConfig) {
     this.duration = new Date().getTime();
@@ -36,6 +34,7 @@ export class EditorTelemetryService {
     this.pdata = this.context.pdata;
     this.sid =  this.context.sid;
     this.uid =  this.context.uid;
+    this.env =  this.context.env;
     this.rollup = this.context.contextRollup;
     if (!CsTelemetryModule.instance.isInitialised) {
       CsTelemetryModule.instance.init({});
@@ -43,7 +42,7 @@ export class EditorTelemetryService {
         {
           config: {
             pdata: config.context.pdata,
-            env: 'ContentPlayer',
+            env: config.context.env,
             channel: config.context.channel,
             did: config.context.did,
             authtoken: config.context.authToken || '',
@@ -54,8 +53,8 @@ export class EditorTelemetryService {
             host: config.context.host || '',
             endpoint: config.context.endpoint || '/data/v3/telemetry',
             tags: config.context.tags,
-            cdata: [{ id: this.contentSessionId, type: 'ContentSession' },
-            { id: this.playSessionId, type: 'PlaySession' }]
+            cdata: _.merge(this.context.cdata, [{ id: this.contentSessionId, type: 'ContentSession' },
+            { id: this.playSessionId, type: 'PlaySession' }])
           },
           userOrgDetails: {}
         }
@@ -63,9 +62,9 @@ export class EditorTelemetryService {
     }
 
     this.telemetryObject = {
-      id: config.metadata.identifier,
+      id: config.context.identifier,
       type: 'Content',
-      ver: config.metadata.pkgVersion + '',
+      ver: '1.0', // TODO :: config.metadata.pkgVersion + ''
       rollup: this.context.objectRollup || {}
     };
   }
@@ -130,11 +129,11 @@ export class EditorTelemetryService {
       context: {
         channel: this.channel,
         pdata: this.pdata,
-        env: 'QuestionSetEditor',
+        env: this.env,
         sid: this.sid,
         uid: this.uid,
-        cdata: [{ id: this.contentSessionId, type: 'ContentSession' },
-        { id: this.playSessionId, type: 'PlaySession' }],
+        cdata: _.merge(this.context.cdata, [{ id: this.contentSessionId, type: 'ContentSession' },
+            { id: this.playSessionId, type: 'PlaySession' }]),
         rollup: this.rollup || {}
       }
     });

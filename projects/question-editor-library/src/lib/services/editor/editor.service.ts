@@ -3,6 +3,7 @@ import { Observable, of, Subject } from 'rxjs';
 import * as _ from 'lodash-es';
 import { map } from 'rxjs/operators';
 import { TreeService, DataService } from '../../services';
+import { toolbarConfig, reviewerToolbarConfig } from '../../editor.config';
 
 interface SelectedChildren {
   primaryCategory?: string;
@@ -18,7 +19,7 @@ export class EditorService {
   private _selectedChildren: SelectedChildren = {};
   private _hierarchyConfig: any;
   public questionStream$ = new Subject<any>();
-  private _editorMode = 'create';
+  private _editorMode = 'edit';
 
 
   constructor(public treeService: TreeService, private dataService: DataService) { }
@@ -53,6 +54,14 @@ export class EditorService {
 
   get editorMode() {
     return this._editorMode;
+  }
+
+  getToolbarConfig() {
+    if (this.editorMode === 'review') {
+     return reviewerToolbarConfig;
+    } else if (this.editorMode === 'edit') {
+      return toolbarConfig;
+    }
   }
 
   public getQuestionSetHierarchy(identifier: string) {

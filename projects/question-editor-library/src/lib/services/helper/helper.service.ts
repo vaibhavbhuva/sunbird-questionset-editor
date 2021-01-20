@@ -3,6 +3,7 @@ import { Observable, of, Subject, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap, mergeMap, filter, first, skipWhile } from 'rxjs/operators';
 import * as _ from 'lodash-es';
 import { PublicDataService } from '../index';
+import { EditorConfig } from '../../question-editor-library-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,12 @@ export class HelperService {
   private _channelData: any;
   constructor(private publicDataService: PublicDataService) { }
 
-  initialize() {
-    this.getLicenses().subscribe();
+  initialize(config?: EditorConfig) {
+    if (_.has(config.context, 'defaultLicense')) {
+      this._availableLicenses = _.get(config, 'context.defaultLicense');
+    } else {
+      this.getLicenses().subscribe();
+    }
   }
   getLicenses(): Observable<any> {
     const req = {

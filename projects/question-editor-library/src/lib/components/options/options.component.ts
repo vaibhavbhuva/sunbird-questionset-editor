@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as _ from 'lodash-es';
-import {McqQuestionTemplate} from '../editor.config';
-import { EditorTelemetryService } from '../services';
+import {McqQuestionTemplate} from '../../editor.config';
+import { EditorTelemetryService } from '../../services';
 @Component({
   selector: 'lib-options',
   templateUrl: './options.component.html',

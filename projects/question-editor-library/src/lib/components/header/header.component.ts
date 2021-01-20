@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EditorTelemetryService } from '../services';
+import { EditorTelemetryService } from '../../services';
 @Component({
   selector: 'lib-header',
   templateUrl: './header.component.html',

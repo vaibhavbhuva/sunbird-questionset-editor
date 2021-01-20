@@ -1,4 +1,5 @@
 export interface Context {
+    identifier: string;
     mode: string;
     authToken?: string;
     sid: string;
@@ -17,6 +18,9 @@ export interface Context {
         firstName: string;
         lastName: string;
     };
+    env: string;
+    defaultLicense: any;
+    framework: string;
 }
 export interface Pdata {
     id: string;
@@ -45,6 +49,6 @@ export interface ObjectRollup {
 
 export interface EditorConfig {
     context: Context;
-    metadata: any;
-    data: any;
+    metadata?: any;
+    data?: any;
 }

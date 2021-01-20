@@ -1,10 +1,9 @@
 import { AfterViewInit, Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
-import { EditorConfig } from '../question-editor-library-interface';
+import { EditorConfig } from '../../question-editor-library-interface';
 import { catchError, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
-import { toolbarConfig, reviewerToolbarConfig } from '../editor.config';
-import { EditorService, TreeService, EditorTelemetryService, HelperService } from '../services';
+import { EditorService, TreeService, EditorTelemetryService, HelperService } from '../../services';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,37 +17,30 @@ export class EditorComponent implements OnInit, AfterViewInit {
   public templateList: any;
   public collectionTreeNodes: any;
   public selectedQuestionData: any = {};
-  public showQuestionTemplate = false;
   public showQuestionTemplatePopup = false;
   public showConfirmPopup = false;
   public submitFormStatus = false;
   public terms = false;
   public collectionId;
+  public pageStartTime;
+  public editorMode;
   public rootObject = 'QuestionSet';
   public childObject = 'Question';
-  public pageStartTime;
   public telemetryPageId = 'question_set';
-  private editorMode;
-
 
   constructor(private editorService: EditorService, private treeService: TreeService, private helperService: HelperService,
-              private router: Router, public telemetryService: EditorTelemetryService,  private cdr: ChangeDetectorRef) {
-                this.editorMode = this.editorService.editorMode;
-               }
+              private router: Router, public telemetryService: EditorTelemetryService,  private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    if (this.editorMode === 'review') {
-      this.toolbarConfig = reviewerToolbarConfig;
-    } else if (this.editorMode === 'create') {
-      this.toolbarConfig = toolbarConfig;
-    }
+    this.editorService.editorMode = _.get(this.editorConfig, 'context.mode');
+    this.editorMode = this.editorService.editorMode;
+    this.toolbarConfig = this.editorService.getToolbarConfig();
     this.pageStartTime = Date.now();
-    this.collectionId = 'do_113193433773948928111';
-    console.log('QuestionSet config', this.editorConfig);
+    this.collectionId = _.get(this.editorConfig, 'context.identifier');
     this.telemetryService.initializeTelemetry(this.editorConfig);
     this.telemetryService.telemetryPageId = this.telemetryPageId;
     this.fetchQuestionSetHierarchy();
-    this.helperService.initialize();
+    this.helperService.initialize(this.editorConfig);
     this.telemetryService.start({type: 'editor', pageid: this.telemetryPageId});
   }
 

@@ -7,16 +7,8 @@ import { SuiModule } from 'v-sb-semantic-ui';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HttpClientModule } from '@angular/common/http';
 import { QuestionEditorLibraryComponent } from './question-editor-library.component';
-import { EditorComponent } from './editor/editor.component';
-import { QuestionComponent } from './question/question.component';
-import { HeaderComponent } from './header/header.component';
-import { TreeComponent } from './tree/tree.component';
-import { AnswerComponent } from './answer/answer.component';
-import { OptionsComponent } from './options/options.component';
-import { QuestionSetComponent } from './question-set/question-set.component';
-import { PlayerComponent } from './player/player.component';
-import { TemplateComponent } from './template/template.component';
-import {CkeditorToolComponent} from './ckeditor-tool/ckeditor-tool.component';
+import { EditorComponent, QuestionComponent, HeaderComponent, TreeComponent, AnswerComponent,
+  OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent} from './components';
 import { QumlLibraryModule } from '@project-sunbird/sunbird-quml-player';
 import {CarouselModule} from 'ngx-bootstrap/carousel';
 import { TelemetryInteractDirective } from './directives';

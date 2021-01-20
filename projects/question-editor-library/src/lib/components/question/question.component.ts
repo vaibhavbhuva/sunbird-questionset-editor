@@ -2,10 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash-es';
 import { UUID } from 'angular2-uuid';
-import { EditorConfig } from '../question-editor-library-interface';
-import { questionToolbarConfig, questionEditorConfig } from '../editor.config';
-import { McqForm, ServerResponse } from '../interfaces';
-import { EditorService, QuestionService, PlayerService, EditorTelemetryService } from '../services';
+import { EditorConfig } from '../../question-editor-library-interface';
+import { questionToolbarConfig, questionEditorConfig } from '../../editor.config';
+import { McqForm, ServerResponse } from '../../interfaces';
+import { EditorService, QuestionService, PlayerService, EditorTelemetryService } from '../../services';
 
 @Component({
   selector: 'lib-question',
