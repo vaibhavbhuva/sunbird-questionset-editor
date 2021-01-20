@@ -17,7 +17,7 @@
   <div class="sb-modal-header">Select Image</div>
   <div class="sb-modal-content p-0">
     <sui-tabset>
-      <div class="sb-tabset-menu mb-16">
+      <div class="sb-tabset-menu">
         <a class="sb-item" suiTabHeader="1">Upload</a>
         <a class="sb-item" (activate)="getMyImages(0)" suiTabHeader="2">My Images</a>
         <a class="sb-item" (activate)="getAllImages(0)" suiTabHeader="3">All Image</a>
@@ -25,7 +25,7 @@
 
 
 
-      <div class="ui segment sb-tabset-segment m-0 pt-0" suiTabContent="1">
+      <div class="ui segment sb-tabset-segment m-0 pt-15" suiTabContent="1">
         <div class="content">
           <div class="upload-image-modal-section d-flex flex-ai-center flex-jc-center flex-dc">
             <ng-container *ngIf="imageUploadLoader">
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <div class="ui segment sb-tabset-segment m-0 pt-0" infiniteScroll [infiniteScrollDistance]="2"
+      <div class="ui segment sb-tabset-segment m-0 pt-15" infiniteScroll [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="500" [scrollWindow]="false" (scrolled)="lazyloadMyImages()" suiTabContent="2">
         <div class="sb-grid-layout image">
           <div class="sb-video-content" *ngFor="let data of myAssets">
@@ -67,7 +67,7 @@
         </div>
       </div>
 
-      <div class="ui segment sb-tabset-segment m-0 pt-0" infiniteScroll [infiniteScrollDistance]="2"
+      <div class="ui segment sb-tabset-segment m-0 pt-15" infiniteScroll [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="500" [scrollWindow]="false" (scrolled)="lazyloadAllImages()" suiTabContent="3">
         <div class="sb-grid-layout image">
           <div class="sb-video-content" *ngFor="let data of allImages">
@@ -87,17 +87,17 @@
   </div>
 </sui-modal>
 
-<sui-modal [isClosable]="isClosable" class="sb-modal overflow-modal" [isInverted]="true" (dismissed)="dismissVideoPicker()"
+<sui-modal [isClosable]="isClosable" class="sb-modal overflow-modal" [isInverted]="false" (dismissed)="dismissVideoPicker()"
   *ngIf="showVideoPicker" [size]="'normal'" [isFullScreen]="false" [mustScroll]="true" #modal>
   <div class="sb-modal-header">Select Video</div>
   <div class="sb-modal-content p-0">
     <sui-tabset>
-      <div class="sb-tabset-menu mb-16">
+      <div class="sb-tabset-menu">
         <a class="sb-item" suiTabHeader="1" (click)="showAddButton=false">Upload</a>
         <a class="sb-item" (activate)="getMyVideos(0)" suiTabHeader="2" [isDisabled]="loading">My Video(s)</a>
         <a class="sb-item" (activate)="getAllVideos(0)" suiTabHeader="3" [isDisabled]="loading">All Video(s)</a>
       </div>
-      <div class="ui segment sb-tabset-segment m-0 pt-0" infiniteScroll [infiniteScrollDistance]="2"
+      <div class="ui segment sb-tabset-segment m-0 pt-15" infiniteScroll [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="500" [scrollWindow]="false" suiTabContent="1">
         <div class="content">
           <div type="text/template" id="qq-template-validation" #fineUploaderUI>
@@ -169,9 +169,9 @@
 
       </div>
 
-      <div class="ui segment sb-tabset-segment m-0 pt-0" infiniteScroll [infiniteScrollDistance]="2"
+      <div class="ui segment sb-tabset-segment m-0 pt-15" infiniteScroll [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="500" [scrollWindow]="false" (scrolled)="lazyloadMyVideos()" suiTabContent="2">
-        <div class="ui container px-24 pb-16 d-flex flex-ai-center">
+        <div class="ui container pb-16 d-flex pl-0">
           <div class="sb-search-box small no-btn">
             <div class="input-div relative">
               <i class="search icon"></i>
@@ -195,9 +195,9 @@
         </div>
       </div>
 
-      <div class="ui segment sb-tabset-segment m-0 pt-0" infiniteScroll [infiniteScrollDistance]="2"
+      <div class="ui segment sb-tabset-segment m-0 pt-15" infiniteScroll [infiniteScrollDistance]="2"
         [infiniteScrollThrottle]="500" [scrollWindow]="false" (scrolled)="lazyloadAllVideos()" suiTabContent="3">
-        <div class="ui container px-24 pb-16 d-flex flex-ai-center">
+        <div class="ui container pb-16 d-flex pl-0">
           <div class="sb-search-box small no-btn">
             <div class="input-div relative">
               <i class="search icon"></i>
