@@ -10,7 +10,7 @@
             class="sb-collectionTree-fancyTree sb-collectionTree-fancyTreelist">
           </lib-tree>
         </div>
-        <div class="eight wide column bg-white pl-40 mb-50">
+        <div class="eight wide column bg-white pl-40">
           <ng-container *ngIf="selectedQuestionData?.folder === true">
             <lib-question-set [questionSetMetadata]="selectedQuestionData"
               (toolbarEmitter)="toolbarEventListener($event)"></lib-question-set>
