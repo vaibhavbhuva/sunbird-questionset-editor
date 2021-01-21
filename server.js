@@ -19,12 +19,12 @@ app.all(['/api/framework/v1/read/*'], proxy('dev.sunbirded.org', {
     proxyReqPathResolver: function(req) {
         console.log('proxyReqPathResolver ',  urlHelper.parse(req.url).path);
         var url = urlHelper.parse(req.url).path;
-        url = url.replace('api/framework/v1/read/', '');
+        // url = url.replace('api/framework/v1/read/', '');
         return url;
     },
     proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
         console.log('proxyReqOptDecorator')
-        // you can update headers 
+        // you can update headers
         proxyReqOpts.headers['Content-Type'] = 'application/json';
         proxyReqOpts.headers['user-id'] = 'content-editor';
         proxyReqOpts.headers['authorization'] = 'Bearer ';
@@ -40,7 +40,7 @@ app.use(['/api','/assets','/action'], proxy('dock.sunbirded.org', {
     },
     proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
         console.log('proxyReqOptDecorator')
-        // you can update headers 
+        // you can update headers
         proxyReqOpts.headers['Content-Type'] = 'application/json';
         proxyReqOpts.headers['user-id'] = 'content-editor';
         proxyReqOpts.headers['authorization'] = 'Bearer ';
