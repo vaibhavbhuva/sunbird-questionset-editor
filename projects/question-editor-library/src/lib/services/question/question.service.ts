@@ -113,7 +113,7 @@ export class QuestionService {
           content: {
             contentType: 'Asset',
             language: ['English'],
-            code: UUID.UUID(), // TODO: UUID
+            code: UUID.UUID(),
           }
         }
       }

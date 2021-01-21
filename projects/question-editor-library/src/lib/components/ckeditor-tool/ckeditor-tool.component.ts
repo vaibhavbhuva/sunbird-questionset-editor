@@ -4,7 +4,7 @@ import { FineUploader } from 'fine-uploader';
 import * as _ from 'lodash-es';
 import { catchError, map } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
-import { QuestionService } from '../../services';
+import { QuestionService, EditorService } from '../../services';
 import MathText from '../../../../../../src/assets/libs/mathEquation/plugin/mathTextPlugin.js';
 // import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
@@ -37,7 +37,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
   initialized = false;
   public assetProxyUrl = '/assets/public/';
   public lastImgResizeWidth;
-  constructor(private questionService: QuestionService) { }
+  constructor(private questionService: QuestionService, private editorService: EditorService) { }
   assetConfig: any = {
     image: {
       size: '50',
@@ -350,7 +350,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
     const req = {
       filters: {
         mediaType: ['image'],
-        createdBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448' // TODO:
+        createdBy: _.get(this.editorService.editorConfig, 'context.user.id')
       },
       offset
     };
@@ -371,7 +371,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
   addImageInEditor(imageUrl, imageId) {
     const src = this.getMediaOriginURL(imageUrl);
     const baseUrl = (document.getElementById('portalBaseUrl') as HTMLInputElement)
-      ? (document.getElementById('portalBaseUrl') as HTMLInputElement).value : 'https://dock.sunbirded.org';
+      ? (document.getElementById('portalBaseUrl') as HTMLInputElement).value : 'https://dock.sunbirded.org'; // TODO
     this.mediaobj = {
       id: imageId,
       type: 'image',
@@ -434,7 +434,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
     const req: any = {
       filters: {
         mediaType: ['video'],
-        createdBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448'
+        createdBy: _.get(this.editorService.editorConfig, 'context.user.id')
       },
       offset
     };
@@ -618,9 +618,9 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
         name: fileName,
         mediaType,
         mimeType: fileType,
-        createdBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448', // TODO:
-        creator: `Vaibhav`, // TODO:
-        channel: this.editorConfig.channel || 'sunbird'
+        createdBy: _.get(this.editorService.editorConfig, 'context.user.id'),
+        creator: _.get(this.editorService.editorConfig, 'context.user.name'),
+        channel: _.get(this.editorService.editorConfig, 'context.channel')
       }
     };
   }
@@ -713,8 +713,7 @@ export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
 
   getMediaOriginURL(src) {
     const replaceText = this.assetProxyUrl;
-    const awsS3Urls = ['https://s3.ap-south-1.amazonaws.com/ekstep-public-qa/', 'https://ekstep-public-qa.s3-ap-south-1.amazonaws.com/',
-      'https://dockstorage.blob.core.windows.net/sunbird-content-dock/'];
+    const awsS3Urls = _.get(this.editorService.editorConfig, 'context.aws_s3_urls') || [];
     _.forEach(awsS3Urls, url => {
       if (src.indexOf(url) !== -1) {
         src = src.replace(url, replaceText);

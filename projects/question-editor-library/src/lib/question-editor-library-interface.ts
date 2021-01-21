@@ -1,4 +1,5 @@
 export interface Context {
+    user: User;
     identifier: string;
     mode: string;
     authToken?: string;
@@ -21,6 +22,12 @@ export interface Context {
     env: string;
     defaultLicense: any;
     framework: string;
+    aws_s3_urls: string[];
+}
+export interface User {
+    id: string;
+    name: string;
+    orgIds: string[];
 }
 export interface Pdata {
     id: string;

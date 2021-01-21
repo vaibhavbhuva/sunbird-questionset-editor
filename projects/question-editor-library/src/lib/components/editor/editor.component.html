@@ -16,7 +16,7 @@
               (toolbarEmitter)="toolbarEventListener($event)"></lib-question-set>
           </ng-container>
           <ng-container *ngIf="selectedQuestionData?.folder === false">
-            <lib-player [questionMetaData]="selectedQuestionData" (toolbarEmitter)="toolbarEventListener($event)">
+            <lib-player [questionMetaData]="selectedQuestionData" [questionSetHierarchy]="collectionTreeNodes" (toolbarEmitter)="toolbarEventListener($event)">
             </lib-player>
           </ng-container>
         </div>

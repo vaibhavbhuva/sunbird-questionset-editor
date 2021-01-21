@@ -1,5 +1,10 @@
 export const Config = {
   context: {
+    user: {
+      id: 'bf020396-0d7b-436f-ae9f-869c6780fc45',
+      name: 'Vaibahv Bhuva',
+      orgIds: ['01307938306521497658']
+    },
     identifier: 'do_113193433773948928111',
     mode: 'edit', // edit OR review
     authToken: ' ',
@@ -60,6 +65,8 @@ export const Config = {
       lastName: 'Bhuva',
     },
     env: 'question_set',
-    framework: 'NCF'
+    framework: 'ekstep_ncert_k-12',
+    aws_s3_urls : ['https://s3.ap-south-1.amazonaws.com/ekstep-public-qa/', 'https://ekstep-public-qa.s3-ap-south-1.amazonaws.com/',
+    'https://dockstorage.blob.core.windows.net/sunbird-content-dock/']
   },
 };

@@ -12,7 +12,7 @@
   </div>
 </div>
 
-<sui-modal [isClosable]="true" class="sb-modal overflow-modal" [isInverted]="true" (dismissed)="dismissImagePicker()"
+<sui-modal [isClosable]="true" class="sb-modal overflow-modal" [isInverted]="false" (dismissed)="dismissImagePicker()"
   *ngIf="showImagePicker" [size]="'normal'" [isFullScreen]="false" [mustScroll]="true" #modal>
   <div class="sb-modal-header">Select Image</div>
   <div class="sb-modal-content p-0">
@@ -227,7 +227,7 @@
   </div>
 </sui-modal>
 
-<sui-modal [isClosable]="true" [isInverted]="true" (dismissed)="dismissImageUploadModal()" *ngIf="showImageUploadModal"
+<sui-modal [isClosable]="true" [isInverted]="false" (dismissed)="dismissImageUploadModal()" *ngIf="showImageUploadModal"
   [size]="'normal'" [isFullScreen]="false" [mustScroll]="true" #modal3>
   <div class="header">Upload and Use</div>
   <div class="content">

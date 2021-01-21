@@ -72,6 +72,22 @@ export class TreeService {
     if (audience && _.isString(audience)) {
       this.treeCache.nodesModified[nodeId].metadata.audience = [audience];
     }
+
+    const subject = this.treeCache.nodesModified[nodeId].metadata.subject; // TODO: Remove this once fixed in the sb-form library
+    if (subject && _.isString(subject)) {
+      this.treeCache.nodesModified[nodeId].metadata.subject = [subject];
+    }
+
+    const medium = this.treeCache.nodesModified[nodeId].metadata.medium; // TODO: Remove this once fixed in the sb-form library
+    if (medium && _.isString(medium)) {
+      this.treeCache.nodesModified[nodeId].metadata.medium = [medium];
+    }
+
+    const gradeLevel = this.treeCache.nodesModified[nodeId].metadata.gradeLevel; // TODO: Remove this once fixed in the sb-form library
+    if (gradeLevel && _.isString(gradeLevel)) {
+      this.treeCache.nodesModified[nodeId].metadata.gradeLevel = [gradeLevel];
+    }
+
     this.treeCache.nodesModified[nodeId].metadata.code = nodeId;
   }
 

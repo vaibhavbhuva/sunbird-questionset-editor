@@ -5,10 +5,10 @@ import { QuestionBaseComponent } from './question-base/question-base.component';
 
 const routes: Routes = [
   {
-    path: 'create/questionSet/:questionSetId', component: EditorBaseComponent, pathMatch: 'full',
+    path: 'questionSet/:questionSetId', component: EditorBaseComponent, pathMatch: 'full',
   },
   {
-    path: 'create/questionSet/:questionSetId/question', component: QuestionBaseComponent, pathMatch: 'full',
+    path: 'questionSet/:questionSetId/question', component: QuestionBaseComponent, pathMatch: 'full',
   }
 ];
 

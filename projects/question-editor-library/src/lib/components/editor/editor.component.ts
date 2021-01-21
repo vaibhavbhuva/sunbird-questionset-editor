@@ -3,7 +3,7 @@ import { EditorConfig } from '../../question-editor-library-interface';
 import { catchError, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
-import { EditorService, TreeService, EditorTelemetryService, HelperService } from '../../services';
+import { EditorService, TreeService, EditorTelemetryService, HelperService, FrameworkService } from '../../services';
 import { Router } from '@angular/router';
 
 @Component({
@@ -29,10 +29,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
   public telemetryPageId = 'question_set';
 
   constructor(private editorService: EditorService, private treeService: TreeService, private helperService: HelperService,
-              private router: Router, public telemetryService: EditorTelemetryService,  private cdr: ChangeDetectorRef) {}
+              private router: Router, public telemetryService: EditorTelemetryService,  private cdr: ChangeDetectorRef,
+              private frameworkService: FrameworkService) {}
 
   ngOnInit() {
-    this.editorService.editorMode = _.get(this.editorConfig, 'context.mode');
+    this.editorService.initialize(this.editorConfig);
     this.editorMode = this.editorService.editorMode;
     this.toolbarConfig = this.editorService.getToolbarConfig();
     this.pageStartTime = Date.now();
@@ -40,7 +41,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.telemetryService.initializeTelemetry(this.editorConfig);
     this.telemetryService.telemetryPageId = this.telemetryPageId;
     this.fetchQuestionSetHierarchy();
-    this.helperService.initialize(this.editorConfig);
+    this.helperService.initialize(_.get(this.editorConfig, 'context.defaultLicense'));
+    this.frameworkService.initialize(_.get(this.editorConfig, 'context.framework'));
     this.telemetryService.start({type: 'editor', pageid: this.telemetryPageId});
   }
 
@@ -68,7 +70,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
       if (_.isUndefined(this.editorService.hierarchyConfig)) {
         // tslint:disable-next-line:max-line-length
         this.editorService.getCategoryDefinition(res.primaryCategory, null, this.rootObject).subscribe((categoryDefRes) => {
-          console.log('categoryDefRes ', categoryDefRes);
           const objectMetadata = categoryDefRes.result.objectCategoryDefinition.objectMetadata;
           if (!_.isEmpty(_.get(objectMetadata, 'config.hierarchyConfig'))) {
             this.editorService.hierarchyConfig = objectMetadata.config.hierarchyConfig;
@@ -249,6 +250,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
     if (mode === 'edit' && this.selectedQuestionData.data.metadata.identifier) {
       queryParams += `questionId=${this.selectedQuestionData.data.metadata.identifier}`;
     }
-    this.router.navigateByUrl(`/create/questionSet/${this.collectionId}/question${queryParams}`);
+    this.router.navigateByUrl(`/questionSet/${this.collectionId}/question${queryParams}`);
   }
 }

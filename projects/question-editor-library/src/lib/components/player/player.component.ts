@@ -1,22 +1,22 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash-es';
 import { ServerResponse } from '../../interfaces';
-import { data1 } from './quml-library-data';
-import { QuestionService, EditorTelemetryService, EditorService } from '../../services';
+import { QuestionService, EditorTelemetryService, EditorService, PlayerService } from '../../services';
 @Component({
   selector: 'lib-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss']
 })
 export class PlayerComponent implements OnInit, OnChanges {
-  QumlPlayerConfig: any = data1;
+  QumlPlayerConfig: any;
   @Input() questionMetaData: any;
+  @Input() questionSetHierarchy: any;
   @Output() public toolbarEmitter: EventEmitter<any> = new EventEmitter();
   questionId: string;
   showPlayerPreview = false;
 
   constructor(private questionService: QuestionService, public telemetryService: EditorTelemetryService,
-              public editorService: EditorService) { }
+              public editorService: EditorService, private playerService: PlayerService) { }
 
   ngOnInit() {}
 
@@ -29,16 +29,23 @@ export class PlayerComponent implements OnInit, OnChanges {
     this.questionId = _.get(this.questionMetaData, 'data.metadata.identifier');
     this.questionService.readQuestion(this.questionId).subscribe((res) => {
        const questionData = res.result.question;
-       this.QumlPlayerConfig.data.children = [];
-       this.QumlPlayerConfig.data.totalQuestions = 1;
-       this.QumlPlayerConfig.data.maxQuestions =  1;
-       this.QumlPlayerConfig.data.maxScore = 1;
-       this.QumlPlayerConfig.data.children.push(questionData);
+       this.setQumlPlayerData(questionData);
        this.showPlayerPreview = true;
     }, (err: ServerResponse) => {
       alert('Fetching question detailes failed. Try again later');
       console.log(err);
     });
+  }
+
+  setQumlPlayerData(questionMetadata) {
+    const playerConfig = _.cloneDeep(this.playerService.getConfig());
+    this.QumlPlayerConfig = playerConfig;
+    this.QumlPlayerConfig.data = this.questionSetHierarchy;
+    this.QumlPlayerConfig.data.totalQuestions = 1;
+    this.QumlPlayerConfig.data.maxQuestions = this.QumlPlayerConfig.data.totalQuestions;
+    this.QumlPlayerConfig.data.maxScore = this.QumlPlayerConfig.data.totalQuestions;
+    this.QumlPlayerConfig.data.children = [];
+    this.QumlPlayerConfig.data.children.push(questionMetadata);
   }
 
   removeQuestion() {

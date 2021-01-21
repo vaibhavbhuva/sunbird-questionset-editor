@@ -67,6 +67,7 @@ export class QuestionComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.editorService.initialize(this.editorConfig);
     this.toolbarConfig = questionToolbarConfig;
     this.editContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'editContent'});
     this.previewContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'previewContent'});
@@ -231,7 +232,7 @@ export class QuestionComponent implements OnInit {
   redirectToQuestionset() {
     this.showConfirmPopup = false;
     setTimeout(() => {
-      this.router.navigateByUrl(`create/questionSet/${this.questionSetId}`);
+      this.router.navigateByUrl(`questionSet/${this.questionSetId}`);
     }, 100);
   }
 
@@ -385,7 +386,7 @@ export class QuestionComponent implements OnInit {
             const questionId = response.result.identifiers.questionId;
             alert('Question is created');
             // tslint:disable-next-line:max-line-length
-            this.router.navigate([`create/questionSet/${this.questionSetId}`]);
+            this.router.navigate([`questionSet/${this.questionSetId}`]);
           }
         },
         (err: ServerResponse) => {
@@ -401,7 +402,7 @@ export class QuestionComponent implements OnInit {
           if (response.result) {
             alert('Question is updated');
             // tslint:disable-next-line:max-line-length
-            this.router.navigate([`create/questionSet/${this.questionSetId}`]);
+            this.router.navigate([`questionSet/${this.questionSetId}`]);
           }
         },
         (err: ServerResponse) => {
@@ -412,19 +413,16 @@ export class QuestionComponent implements OnInit {
  async previewContent() {
   await this.validateQuestionData();
   if (this.showFormError === false) {
-    await this.setQumlData();
+    await this.setQumlPlayerData();
     this.toolbarConfig.buttons[this.editContentIndex].display = 'block';
     this.toolbarConfig.buttons[this.previewContentIndex].display = 'none';
     this.showPreview = true;
    }
   }
 
-  setQumlData() {
-    const playerConfig = this.playerService.getConfig();
-    this.QumlPlayerConfig.metadata = playerConfig.metadata;
-    this.QumlPlayerConfig.context = playerConfig.context;
-    this.QumlPlayerConfig.context.cdata = []; // TODO::
-    this.QumlPlayerConfig.context.pdata = []; // TODO::
+  setQumlPlayerData() {
+    const playerConfig = _.cloneDeep(this.playerService.getConfig());
+    this.QumlPlayerConfig = playerConfig;
     this.QumlPlayerConfig.data = this.questionSetHierarchy;
     this.QumlPlayerConfig.data.totalQuestions = 1;
     this.QumlPlayerConfig.data.maxQuestions = this.QumlPlayerConfig.data.totalQuestions;

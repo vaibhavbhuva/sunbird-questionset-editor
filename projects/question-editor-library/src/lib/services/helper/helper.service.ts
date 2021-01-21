@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject, throwError } from 'rxjs';
-import { catchError, map, switchMap, tap, mergeMap, filter, first, skipWhile } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, tap} from 'rxjs/operators';
 import * as _ from 'lodash-es';
 import { PublicDataService } from '../index';
-import { EditorConfig } from '../../question-editor-library-interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HelperService {
   private _availableLicenses: Array<any>;
-  private _channelData: any;
   constructor(private publicDataService: PublicDataService) { }
 
-  initialize(config?: EditorConfig) {
-    if (_.has(config.context, 'defaultLicense')) {
-      this._availableLicenses = _.get(config, 'context.defaultLicense');
+  initialize(defaultLicense?: any) {
+    if (defaultLicense) {
+      this._availableLicenses = defaultLicense;
     } else {
       this.getLicenses().subscribe();
     }
@@ -44,22 +42,4 @@ export class HelperService {
     return this._availableLicenses;
   }
 
-  // apiErrorHandling(err, errorInfo) {
-  //   this.toasterService.error(_.get(err, 'error.params.errmsg') || errorInfo.errorMsg);
-  // }
-
-  // fetchChannelData(channelId) {
-  //   this.frameworkService.getChannelData(channelId);
-  //   this.frameworkService.channelData$
-  //     .pipe(
-  //       filter(data => channelId === _.get(data, 'channelData.identifier'), first())
-  //     ).subscribe(
-  //       (data) => {
-  //         this._channelData = _.get(data, 'channelData');
-  //       },
-  //       (error) => {
-  //         console.log(error);
-  //       }
-  //     );
-  // }
 }

@@ -4,7 +4,7 @@ import * as _ from 'lodash-es';
 import { map } from 'rxjs/operators';
 import { TreeService, DataService } from '../../services';
 import { toolbarConfig, reviewerToolbarConfig } from '../../editor.config';
-
+import { EditorConfig } from '../../question-editor-library-interface';
 interface SelectedChildren {
   primaryCategory?: string;
   mimeType?: string;
@@ -20,9 +20,15 @@ export class EditorService {
   private _hierarchyConfig: any;
   public questionStream$ = new Subject<any>();
   private _editorMode = 'edit';
+  private _editorConfig: any;
 
 
   constructor(public treeService: TreeService, private dataService: DataService) { }
+
+  public initialize(config: EditorConfig) {
+    this._editorConfig = config;
+    this._editorMode = _.get(this.editorConfig, 'context.mode');
+  }
 
   set selectedChildren(value: SelectedChildren) {
     if (value.mimeType) {
@@ -48,12 +54,12 @@ export class EditorService {
     return this._hierarchyConfig;
   }
 
-  set editorMode(mode) {
-    this._editorMode = mode;
-  }
-
   get editorMode() {
     return this._editorMode;
+  }
+
+  get editorConfig() {
+    return this._editorConfig;
   }
 
   getToolbarConfig() {
