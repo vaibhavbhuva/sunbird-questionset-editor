@@ -1,11 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash-es';
 import { UUID } from 'angular2-uuid';
-import { EditorConfig } from '../../question-editor-library-interface';
-import { questionToolbarConfig, questionEditorConfig } from '../../editor.config';
+import { questionEditorConfig } from '../../editor.config';
 import { McqForm, ServerResponse } from '../../interfaces';
-import { EditorService, QuestionService, PlayerService, EditorTelemetryService } from '../../services';
+import { EditorService, QuestionService, PlayerService, EditorTelemetryService, ToasterService } from '../../services';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'lib-question',
@@ -14,7 +13,8 @@ import { EditorService, QuestionService, PlayerService, EditorTelemetryService }
 })
 export class QuestionComponent implements OnInit {
   QumlPlayerConfig: any = {};
-  @Input() editorConfig: EditorConfig | undefined;
+  @Input() questionInput: any;
+  @Output() questionEmitter = new EventEmitter<any>();
   toolbarConfig: any;
   public ckeditorConfig: any = questionEditorConfig;
   public editorState: any = {};
@@ -47,40 +47,32 @@ export class QuestionComponent implements OnInit {
   public showLoader = true;
   questionSetHierarchy: any;
   showConfirmPopup = false;
-  public questionData: any = {};
   validQuestionData = false;
   questionPrimaryCategory: string;
   telemetryPageId: 'question';
-  editContentIndex;
-  previewContentIndex;
 
   constructor(
     private questionService: QuestionService, private editorService: EditorService, public telemetryService: EditorTelemetryService,
-    private router: Router, public playerService: PlayerService, private activatedRoute: ActivatedRoute
-  ) {
-    this.questionData = this.editorService.selectedChildren;
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.questionInteractionType = params.type;
-      this.questionId = params.questionId;
-      this.questionPrimaryCategory = this.questionData.primaryCategory;
-    });
+    public playerService: PlayerService, private toasterService: ToasterService ) {
+      const { primaryCategory } = this.editorService.selectedChildren;
+      this.questionPrimaryCategory = primaryCategory;
    }
 
   ngOnInit() {
-    this.editorService.initialize(this.editorConfig);
-    this.toolbarConfig = questionToolbarConfig;
-    this.editContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'editContent'});
-    this.previewContentIndex = _.findIndex(this.toolbarConfig.buttons, {type: 'previewContent'});
+    const { questionSetId, questionId, type } = this.questionInput;
+    this.questionInteractionType = type;
+    this.questionId = questionId;
+    this.questionSetId = questionSetId;
+    this.toolbarConfig = this.editorService.getToolbarConfig();
+    this.toolbarConfig.view = 'question';
+    this.toolbarConfig.showPreview = false;
     this.solutionUUID = UUID.UUID();
-    this.telemetryService.initializeTelemetry(this.editorConfig);
     this.telemetryService.telemetryPageId = this.telemetryPageId;
     this.initialize();
   }
 
   initialize() {
-    this.questionSetId = _.get(this.activatedRoute, 'snapshot.params.questionSetId');
-    this.editorService.getQuestionSetHierarchy(this.questionSetId).
-      subscribe((response) => {
+    this.editorService.getQuestionSetHierarchy(this.questionSetId).subscribe((response) => {
         this.questionSetHierarchy = response;
         if (!_.isUndefined(this.questionId)) {
           this.questionService.readQuestion(this.questionId)
@@ -134,10 +126,11 @@ export class QuestionComponent implements OnInit {
                 }
                 this.showLoader = false;
               }
-            },
-            (err: ServerResponse) => {
-              alert('Unable to get question detail');
-              console.log(err);
+            }, (err: ServerResponse) => {
+              const errInfo = {
+                errorMsg: 'Fetching question details failed. Please try again...',
+              };
+              return throwError(this.editorService.apiErrorHandling(err, errInfo));
             });
         }
         if (_.isUndefined(this.questionId)) {
@@ -152,11 +145,12 @@ export class QuestionComponent implements OnInit {
             this.showLoader = false;
           }
         }
-      },
-      (err: ServerResponse) => {
-        alert('Unable to get questionset detail');
-        console.log(err);
-      });
+      }, (err: ServerResponse) => {
+        const errInfo = {
+          errorMsg: 'Fetching question set details failed. Please try again...',
+        };
+        this.editorService.apiErrorHandling(err, errInfo);
+    });
   }
 
   toolbarEventListener(event) {
@@ -174,9 +168,8 @@ export class QuestionComponent implements OnInit {
         this.previewContent();
         break;
         case 'editContent':
-          this.toolbarConfig.buttons[this.previewContentIndex].display = 'block';
-          this.toolbarConfig.buttons[this.editContentIndex].display = 'none';
           this.showPreview = false;
+          this.toolbarConfig.showPreview = false;
           this.showLoader = false;
           break;
       default:
@@ -232,7 +225,7 @@ export class QuestionComponent implements OnInit {
   redirectToQuestionset() {
     this.showConfirmPopup = false;
     setTimeout(() => {
-      this.router.navigateByUrl(`questionSet/${this.questionSetId}`);
+      this.questionEmitter.emit({status : false});
     }, 100);
   }
 
@@ -345,7 +338,8 @@ export class QuestionComponent implements OnInit {
     let metadata: any = {
       mimeType: 'application/vnd.sunbird.question',
       media: this.mediaArr,
-      editorState: {}
+      editorState: {},
+      ..._.pick(this.questionSetHierarchy, ['board', 'medium', 'gradeLevel', 'subject', 'topic', 'author'])
     };
     metadata = _.assign(metadata, this.editorState);
     metadata.editorState.question = metadata.question;
@@ -380,33 +374,34 @@ export class QuestionComponent implements OnInit {
   createQuestion() {
     const metadata = this.prepareRequestBody();
     this.questionService.updateHierarchyQuestionCreate(this.questionSetId, metadata, this.questionSetHierarchy).
-      subscribe(
-        (response: ServerResponse) => {
+      subscribe((response: ServerResponse) => {
           if (response.result) {
-            const questionId = response.result.identifiers.questionId;
-            alert('Question is created');
-            // tslint:disable-next-line:max-line-length
-            this.router.navigate([`questionSet/${this.questionSetId}`]);
+            this.toasterService.success('Question is created sucessfully');
+            this.redirectToQuestionset();
           }
         },
         (err: ServerResponse) => {
-          console.log(err);
+          const errInfo = {
+            errorMsg: 'Question creating failed. Please try again...',
+          };
+          this.editorService.apiErrorHandling(err, errInfo);
         });
   }
 
   updateQuestion(questionId) {
     const metadata = this.prepareRequestBody();
     this.questionService.updateHierarchyQuestionUpdate(this.questionSetId, questionId, metadata, this.questionSetHierarchy).
-      subscribe(
-        (response: ServerResponse) => {
+      subscribe((response: ServerResponse) => {
           if (response.result) {
-            alert('Question is updated');
-            // tslint:disable-next-line:max-line-length
-            this.router.navigate([`questionSet/${this.questionSetId}`]);
+            this.toasterService.success('Question is updated sucessfully');
+            this.redirectToQuestionset();
           }
         },
         (err: ServerResponse) => {
-          console.log(err);
+          const errInfo = {
+            errorMsg: 'Question updating failed. Please try again...',
+          };
+          this.editorService.apiErrorHandling(err, errInfo);
         });
   }
 
@@ -414,16 +409,15 @@ export class QuestionComponent implements OnInit {
   await this.validateQuestionData();
   if (this.showFormError === false) {
     await this.setQumlPlayerData();
-    this.toolbarConfig.buttons[this.editContentIndex].display = 'block';
-    this.toolbarConfig.buttons[this.previewContentIndex].display = 'none';
     this.showPreview = true;
+    this.toolbarConfig.showPreview = true;
    }
   }
 
   setQumlPlayerData() {
     const playerConfig = _.cloneDeep(this.playerService.getConfig());
     this.QumlPlayerConfig = playerConfig;
-    this.QumlPlayerConfig.data = this.questionSetHierarchy;
+    this.QumlPlayerConfig.data = _.cloneDeep(this.questionSetHierarchy);
     this.QumlPlayerConfig.data.totalQuestions = 1;
     this.QumlPlayerConfig.data.maxQuestions = this.QumlPlayerConfig.data.totalQuestions;
     this.QumlPlayerConfig.data.maxScore = this.QumlPlayerConfig.data.totalQuestions;
@@ -444,8 +438,8 @@ export class QuestionComponent implements OnInit {
     let index;
     if (!_.isUndefined(questionId)) {
       // tslint:disable-next-line:only-arrow-functions
-        index = _.findIndex(hierarchyChildNodes, function(el) {
-      return el === questionId;
+      index = _.findIndex(hierarchyChildNodes, function(el) {
+        return el === questionId;
       });
     } else {
       index = hierarchyChildNodes.length;

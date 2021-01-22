@@ -1,94 +1,20 @@
-export const toolbarConfig = {
-  headerName: 'Create Question Set',
-  title: 'Question Collection',
-  buttons: [{
-    telemetryId: 'save_as_draft',
-    telemetrySubtype: 'submit',
-    name: 'Save as draft',
-    type: 'saveCollection',
-    buttonType: 'button',
-    style: 'sb-btn sb-btn-normal sb-btn-outline-primary mr-10',
-    display: 'block'
-  },
-  {
-    telemetryId: 'submit',
-    telemetrySubtype: 'submit',
-    name: 'Submit',
-    type: 'submitCollection',
-    buttonType: 'button',
-    style: 'sb-btn sb-btn-normal sb-btn-primary',
-    slot: `<i class="trash alternate outline icon"></i>`,
-    display: 'block'
-  }
-  ]
-};
-
-export const reviewerToolbarConfig = {
-  headerName: 'Review Question Set',
-  title: 'Question Collection',
-  buttons: [{
-    telemetryId: 'reject',
-    telemetrySubtype: 'submit',
-    name: 'Reject',
-    type: 'rejectCollection',
-    buttonType: 'button',
-    style: 'sb-btn sb-btn-outline-error sb-btn-normal ripple mr-10',
-    display: 'block'
-  },
-  {
-    telemetryId: 'publish',
-    telemetrySubtype: 'submit',
-    name: 'Publish',
-    type: 'publishCollection',
-    buttonType: 'button',
-    style: 'sb-btn sb-btn-secondary sb-btn-normal ripple',
-    display: 'block'
-  }
-  ]
-};
-
-export const questionToolbarConfig = {
-  headerName: 'Back',
-  title: '',
-  buttons: [
-    {
-      telemetryId: 'edit',
-      telemetrySubtype: 'launch',
-      name: 'Edit',
-      type: 'editContent',
-      buttonType: 'button',
-      style: 'sb-btn sb-btn-normal sb-btn-outline-primary mr-10',
-      slot: `icon edit`,
-      display: 'none'
-    },
-    {
-    telemetryId: 'preview',
-    telemetrySubtype: 'launch',
-    name: 'Preview',
-    type: 'previewContent',
-    buttonType: 'button',
-    style: 'sb-btn sb-btn-normal sb-btn-outline-primary mr-10',
-    slot: `icon eye`,
-    display: 'block'
-  }, {
-    telemetryId: 'cancel',
-    telemetrySubtype: 'launch',
-    name: 'Cancel',
-    type: 'cancelContent',
-    buttonType: 'button',
-    style: 'sb-btn sb-btn-normal sb-btn-outline-primary mr-10',
-    display: 'block'
-  },
-  {
-    telemetryId: 'save',
-    telemetrySubtype: 'submit',
-    name: 'Save',
-    type: 'saveContent',
-    buttonType: 'button',
-    style: 'sb-btn sb-btn-normal sb-btn-primary',
-    display: 'block'
-  }
-  ]
+export const labelConfig = {
+  save_collection_btn_label: 'Save as Daft',
+  save_collection_btn_icon : '',
+  submit_collection_btn_label: 'Submit',
+  submit_collection_btn_icon: '',
+  reject_collection_btn_label: 'Reject',
+  reject_collection_btn_icon: '',
+  publish_collection_btn_label: 'Publish',
+  publish_collection_btn_icon: '',
+  edit_question_btn_label: 'Edit',
+  edit_question_btn_icon: 'icon edit',
+  preview_question_btn_label: 'Preview',
+  preview_question_btn_icon: 'icon eye',
+  cancel_question_btn_label: 'Cancel',
+  cancel_question_btn_icon: '',
+  save_question_btn_label: 'Save',
+  save_question_btn_icon: ''
 };
 
 // TODO: rethink this

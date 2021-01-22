@@ -21,31 +21,34 @@ export class PlayerComponent implements OnInit, OnChanges {
   ngOnInit() {}
 
   ngOnChanges() {
+    this.questionMetaData = _.get(this.questionMetaData, 'data.metadata');
     this.showPlayerPreview = false;
     this.initialize();
   }
 
   initialize() {
-    this.questionId = _.get(this.questionMetaData, 'data.metadata.identifier');
+    this.questionId = _.get(this.questionMetaData, 'identifier');
     this.questionService.readQuestion(this.questionId).subscribe((res) => {
        const questionData = res.result.question;
        this.setQumlPlayerData(questionData);
        this.showPlayerPreview = true;
     }, (err: ServerResponse) => {
-      alert('Fetching question detailes failed. Try again later');
-      console.log(err);
+      const errInfo = {
+        errorMsg: 'Fetching question detailes failed. Try again later',
+      };
+      this.editorService.apiErrorHandling(err, errInfo);
     });
   }
 
-  setQumlPlayerData(questionMetadata) {
+  setQumlPlayerData(questionData) {
     const playerConfig = _.cloneDeep(this.playerService.getConfig());
     this.QumlPlayerConfig = playerConfig;
-    this.QumlPlayerConfig.data = this.questionSetHierarchy;
+    this.QumlPlayerConfig.data = _.cloneDeep(this.questionSetHierarchy);
     this.QumlPlayerConfig.data.totalQuestions = 1;
     this.QumlPlayerConfig.data.maxQuestions = this.QumlPlayerConfig.data.totalQuestions;
     this.QumlPlayerConfig.data.maxScore = this.QumlPlayerConfig.data.totalQuestions;
     this.QumlPlayerConfig.data.children = [];
-    this.QumlPlayerConfig.data.children.push(questionMetadata);
+    this.QumlPlayerConfig.data.children.push(questionData);
   }
 
   removeQuestion() {

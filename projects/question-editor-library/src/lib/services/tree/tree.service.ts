@@ -3,6 +3,7 @@ import 'jquery.fancytree';
 import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash-es';
 import { editorConfig } from '../../editor.config';
+import { ToasterService } from '../../services';
 declare var $: any;
 
 @Injectable({
@@ -16,7 +17,7 @@ export class TreeService {
   };
   treeNativeElement: any;
 
-  constructor() { }
+  constructor(private toasterService: ToasterService) { }
 
   setTreeElement(el) {
     this.treeNativeElement = el;
@@ -38,7 +39,7 @@ export class TreeService {
     if (node.folder) {
       // to check child node should not be created more than the set configlevel
       if ((selectedNode.getLevel() >= this.config.editorConfig.rules.levels - 1) && createType === 'child') {
-        alert('Sorry, this operation is not allowed.');
+        this.toasterService.error('Sorry, this operation is not allowed.');
         return;
       }
       newNode = (createType === 'sibling') ? selectedNode.appendSibling(node) : selectedNode.addChildren(node);
@@ -51,7 +52,7 @@ export class TreeService {
     newNode.setActive();
     // selectedNode.sortChildren(null, true);
     selectedNode.setExpanded();
-    $('span.fancytree-title').attr('style', 'width:11em;text-overflow:ellipsis;white-space:nowrap;overflow:hidden');
+    $('span.fancytree-title').attr('style', 'width:15em;text-overflow:ellipsis;white-space:nowrap;overflow:hidden');
     $(this.treeNativeElement).scrollLeft($('.fancytree-lastsib').width());
     $(this.treeNativeElement).scrollTop($('.fancytree-lastsib').height());
   }
@@ -109,7 +110,7 @@ export class TreeService {
     this.getActiveNode().applyPatch({ title }).done((a, b) => {
       // instance.onRenderNode(undefined, { node: ecEditor.jQuery('#collection-tree').fancytree('getTree').getActiveNode() }, true)
     });
-    $('span.fancytree-title').attr('style', 'width:11em;text-overflow:ellipsis;white-space:nowrap;overflow:hidden');
+    $('span.fancytree-title').attr('style', 'width:15em;text-overflow:ellipsis;white-space:nowrap;overflow:hidden');
   }
 
   removeSpecialChars(text) {
@@ -118,7 +119,7 @@ export class TreeService {
       const iChars = "!`~@#$^*+=[]\\\'{}|\"<>%/";
       for (let i = 0; i < text.length; i++) {
         if (iChars.indexOf(text.charAt(i)) !== -1) {
-          alert('Special character "' + text.charAt(i) + '" is not allowed');
+          this.toasterService.error('Special character "' + text.charAt(i) + '" is not allowed');
         }
       }
       // tslint:disable-next-line:max-line-length

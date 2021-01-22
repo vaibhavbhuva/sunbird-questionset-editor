@@ -328,6 +328,7 @@
   
   // spaces
   $base-block-space: 0.5rem;
+  $block-padding-xy: ($base-block-space * 2);
   
   // Search Component
 $sb-search-box-shadow-color: $primary-300;

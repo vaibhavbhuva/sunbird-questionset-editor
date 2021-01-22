@@ -3,23 +3,24 @@ import { EditorConfig } from '../../question-editor-library-interface';
 import { catchError, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
-import { EditorService, TreeService, EditorTelemetryService, HelperService, FrameworkService } from '../../services';
-import { Router } from '@angular/router';
+import { EditorService, TreeService, EditorTelemetryService, HelperService, FrameworkService, ToasterService } from '../../services';
 
 @Component({
   selector: 'lib-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent implements OnInit, AfterViewInit {
+export class EditorComponent implements OnInit {
   @Input() editorConfig: EditorConfig | undefined;
   public toolbarConfig: any;
   public templateList: any;
   public collectionTreeNodes: any;
   public selectedQuestionData: any = {};
+  public questionComponentInput: any = {};
   public showQuestionTemplatePopup = false;
   public showConfirmPopup = false;
   public submitFormStatus = false;
+  public showQuestionView = false;
   public terms = false;
   public collectionId;
   public pageStartTime;
@@ -29,13 +30,14 @@ export class EditorComponent implements OnInit, AfterViewInit {
   public telemetryPageId = 'question_set';
 
   constructor(private editorService: EditorService, private treeService: TreeService, private helperService: HelperService,
-              private router: Router, public telemetryService: EditorTelemetryService,  private cdr: ChangeDetectorRef,
-              private frameworkService: FrameworkService) {}
+              public telemetryService: EditorTelemetryService,  private cdr: ChangeDetectorRef,
+              private frameworkService: FrameworkService, private toasterService: ToasterService) {}
 
   ngOnInit() {
     this.editorService.initialize(this.editorConfig);
     this.editorMode = this.editorService.editorMode;
     this.toolbarConfig = this.editorService.getToolbarConfig();
+    this.toolbarConfig.view = 'question_set';
     this.pageStartTime = Date.now();
     this.collectionId = _.get(this.editorConfig, 'context.identifier');
     this.telemetryService.initializeTelemetry(this.editorConfig);
@@ -44,10 +46,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.helperService.initialize(_.get(this.editorConfig, 'context.defaultLicense'));
     this.frameworkService.initialize(_.get(this.editorConfig, 'context.framework'));
     this.telemetryService.start({type: 'editor', pageid: this.telemetryPageId});
-  }
-
-  ngAfterViewInit() {
-    this.telemetryService.impression({type: 'list', pageid: this.telemetryPageId, uri: this.router.url});
   }
 
   generateTelemetryEndEvent(eventMode) {
@@ -65,11 +63,16 @@ export class EditorComponent implements OnInit, AfterViewInit {
       const errInfo = {
         errorMsg: 'Fetching question set details failed. Please try again...',
       };
-      return throwError(errInfo);
+      return throwError(this.editorService.apiErrorHandling(error, errInfo));
     })).subscribe(res => {
       if (_.isUndefined(this.editorService.hierarchyConfig)) {
         // tslint:disable-next-line:max-line-length
-        this.editorService.getCategoryDefinition(res.primaryCategory, null, this.rootObject).subscribe((categoryDefRes) => {
+        this.editorService.getCategoryDefinition(res.primaryCategory, null, this.rootObject).pipe(catchError(error => {
+          const errInfo = {
+            errorMsg: 'Fetching question set details failed. Please try again...',
+          };
+          return throwError(this.editorService.apiErrorHandling(error, errInfo));
+        })).subscribe((categoryDefRes) => {
           const objectMetadata = categoryDefRes.result.objectCategoryDefinition.objectMetadata;
           if (!_.isEmpty(_.get(objectMetadata, 'config.hierarchyConfig'))) {
             this.editorService.hierarchyConfig = objectMetadata.config.hierarchyConfig;
@@ -82,8 +85,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
             };
           }
           this.templateList = this.editorService.hierarchyConfig.children[this.childObject];
-        }, (err) => {
-          console.log(err);
         });
       } else {
         this.templateList = this.editorService.hierarchyConfig.children[this.childObject];
@@ -92,19 +93,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
       this.collectionTreeNodes = res;
       this.cdr.detectChanges();
       if (_.isEmpty(res.children)) {
-          this.hideButton('submitCollection');
+          // this.hideButton('submitCollection'); TODO: Hide submit collection button if children empty
       }
     });
-  }
-
-  showButton(buttonType) {
-    const buttonIndex = _.findIndex(this.toolbarConfig.buttons, {type: buttonType});
-    this.toolbarConfig.buttons[buttonIndex].display = 'display';
-  }
-
-  hideButton(buttonType) {
-    const buttonIndex = _.findIndex(this.toolbarConfig.buttons, {type: buttonType});
-    this.toolbarConfig.buttons[buttonIndex].display = 'none';
   }
 
   toolbarEventListener(event) {
@@ -140,17 +131,21 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   saveCollection() {
-    this.editorService.updateQuestionSetHierarchy()
-      .pipe(map(data => _.get(data, 'result'))).subscribe(response => {
+    this.editorService.updateQuestionSetHierarchy().pipe(catchError(error => {
+        const errInfo = {
+          errorMsg: 'Saving question set details failed. Please try again...',
+        };
+        return throwError(this.editorService.apiErrorHandling(error, errInfo));
+      }), map(data => _.get(data, 'result'))).subscribe(response => {
         this.treeService.replaceNodeId(response.identifiers);
         this.treeService.clearTreeCache();
-        alert('Question set updated successfully');
+        this.toasterService.success('Question set is updated successfully');
       });
   }
 
   submitHandler() {
     if (!this.submitFormStatus) {
-      alert('Please fill the required metadata');
+      this.toasterService.error('Please fill the required metadata');
       return false;
     }
     this.showConfirmPopup = true;
@@ -161,10 +156,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
       const errInfo = {
         errorMsg: 'Sending question set for review failed. Please try again...',
       };
-      return throwError(errInfo);
+      return throwError(this.editorService.apiErrorHandling(error, errInfo));
     })).subscribe(res => {
       this.showConfirmPopup = false;
-      alert('Question set sent for review');
+      this.toasterService.success('Question set sent for review');
     });
   }
 
@@ -173,11 +168,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
       const errInfo = {
         errorMsg: 'Publishing question set failed. Please try again...',
       };
-      return throwError(errInfo);
+      return throwError(this.editorService.apiErrorHandling(error, errInfo));
     })).subscribe(res => {
       this.showConfirmPopup = false;
       this.generateTelemetryEndEvent('submit');
-      alert('Question set published successfully');
+      this.toasterService.success('Question set published successfully');
     });
   }
 
@@ -186,11 +181,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
       const errInfo = {
         errorMsg: 'Rejecting question set failed. Please try again...',
       };
-      return throwError(errInfo);
+      return throwError(this.editorService.apiErrorHandling(error, errInfo));
     })).subscribe(res => {
       this.showConfirmPopup = false;
       this.generateTelemetryEndEvent('submit');
-      alert('Question set rejected successfully');
+      this.toasterService.success('Question set rejected successfully');
     });
   }
 
@@ -212,12 +207,17 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   handleTemplateSelection($event) {
     const selectedQuestionType = $event;
+    this.showQuestionTemplatePopup = false;
     if (selectedQuestionType && selectedQuestionType.type === 'close') {
-      this.showQuestionTemplatePopup = false;
       return false;
     }
     // tslint:disable-next-line:max-line-length
-    this.editorService.getCategoryDefinition(selectedQuestionType, null, this.childObject).subscribe((res) => {
+    this.editorService.getCategoryDefinition(selectedQuestionType, null, this.childObject).pipe(catchError(error => {
+      const errInfo = {
+        errorMsg: 'Fetch question set template failed. Please try again...',
+      };
+      return throwError(this.editorService.apiErrorHandling(error, errInfo));
+    })).subscribe((res) => {
       const selectedtemplateDetails = res.result.objectCategoryDefinition;
       const catMetaData = selectedtemplateDetails.objectMetadata;
       if (_.isEmpty(_.get(catMetaData, 'schema.properties.interactionTypes.items.enum'))) {
@@ -237,19 +237,21 @@ export class EditorComponent implements OnInit, AfterViewInit {
         };
         this.redirectToQuestionTab(undefined, interactionTypes[0]);
       }
-    }, (err) => {
-      console.log(err);
     });
   }
 
-  redirectToQuestionTab(mode?, interactionType?) {
-    let queryParams = '?';
-    if (interactionType) {
-      queryParams += `type=${interactionType}`;
-    }
-    if (mode === 'edit' && this.selectedQuestionData.data.metadata.identifier) {
-      queryParams += `questionId=${this.selectedQuestionData.data.metadata.identifier}`;
-    }
-    this.router.navigateByUrl(`/questionSet/${this.collectionId}/question${queryParams}`);
+  redirectToQuestionTab(mode, interactionType?) {
+    this.questionComponentInput = {
+      questionSetId: this.collectionId,
+      questionId: mode === 'edit' ? this.selectedQuestionData.data.metadata.identifier : undefined,
+      type: interactionType
+    };
+    this.showQuestionView = true;
+  }
+
+  questionEventListener(event: any) {
+    this.toolbarConfig.view = 'question_set';
+    this.telemetryService.telemetryPageId = this.telemetryPageId;
+    this.showQuestionView = event.status;
   }
 }

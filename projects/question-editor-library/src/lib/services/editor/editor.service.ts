@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 import * as _ from 'lodash-es';
 import { map } from 'rxjs/operators';
-import { TreeService, DataService } from '../../services';
-import { toolbarConfig, reviewerToolbarConfig } from '../../editor.config';
+import { TreeService, DataService, ToasterService, EditorTelemetryService } from '../../services';
+import { labelConfig} from '../../editor.config';
 import { EditorConfig } from '../../question-editor-library-interface';
 interface SelectedChildren {
   primaryCategory?: string;
@@ -23,7 +23,8 @@ export class EditorService {
   private _editorConfig: any;
 
 
-  constructor(public treeService: TreeService, private dataService: DataService) { }
+  constructor(public treeService: TreeService, private dataService: DataService, private toasterService: ToasterService,
+              private telemetryService: EditorTelemetryService) { }
 
   public initialize(config: EditorConfig) {
     this._editorConfig = config;
@@ -63,11 +64,7 @@ export class EditorService {
   }
 
   getToolbarConfig() {
-    if (this.editorMode === 'review') {
-     return reviewerToolbarConfig;
-    } else if (this.editorMode === 'edit') {
-      return toolbarConfig;
-    }
+    return _.cloneDeep(labelConfig);
   }
 
   public getQuestionSetHierarchy(identifier: string) {
@@ -181,4 +178,18 @@ export class EditorService {
     };
     return this.dataService.post(req);
   }
+
+  apiErrorHandling(err, errorInfo) {
+    if (_.get(err, 'error.params.errmsg') || errorInfo.errorMsg) {
+      this.toasterService.error(_.get(err, 'error.params.errmsg') || errorInfo.errorMsg);
+    }
+    const telemetryErrorData = {
+        err: _.toString(err.status),
+        errtype: 'SYSTEM',
+        stacktrace: JSON.stringify({response: _.pick(err, ['error', 'url']), request: _.get(errorInfo, 'request')}) || errorInfo.errorMsg,
+        pageid: this.telemetryService.telemetryPageId
+    };
+    this.telemetryService.error(telemetryErrorData);
+  }
+
 }

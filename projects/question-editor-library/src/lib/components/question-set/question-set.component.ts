@@ -34,11 +34,6 @@ export class QuestionSetComponent implements OnInit, OnDestroy {
         if (category.code === formFieldCategory.code) {
           formFieldCategory.terms = category.terms;
         }
-
-        if (category.code === formFieldCategory.code && formFieldCategory.code === 'topic') {
-          formFieldCategory.range = category.terms;
-        }
-
         if (formFieldCategory.code === 'license' && this.helperService.getAvailableLicenses()) {
           const licenses = this.helperService.getAvailableLicenses();
           if (licenses && licenses.length) {

@@ -8,4 +8,6 @@ export * from './util/util-service';
 export * from './player/player.service';
 export * from './public-data/public-data.service';
 export * from './framework/framework.service';
+export * from './toaster/toaster.service';
+
 

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonFormElementsModule } from 'v-dynamic-forms';
 import { SuiModule } from 'v-sb-semantic-ui';
@@ -12,14 +11,16 @@ import { EditorComponent, QuestionComponent, HeaderComponent, TreeComponent, Ans
 import { QumlLibraryModule } from '@project-sunbird/sunbird-quml-player';
 import {CarouselModule} from 'ngx-bootstrap/carousel';
 import { TelemetryInteractDirective } from './directives';
+import { ToasterService } from './services';
 
 
 @NgModule({
+  providers: [ToasterService],
   declarations: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent, HeaderComponent,
   TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent,
   TelemetryInteractDirective],
   imports: [
-    CommonModule, FormsModule, RouterModule.forChild([]), CommonFormElementsModule, InfiniteScrollModule,
+    CommonModule, FormsModule, CommonFormElementsModule, InfiniteScrollModule,
     HttpClientModule, SuiModule,  QumlLibraryModule, CarouselModule.forRoot()
   ],
   exports: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent]

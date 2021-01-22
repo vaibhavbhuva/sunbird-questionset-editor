@@ -18,9 +18,7 @@ app.all(['/api/framework/v1/read/*'], proxy('dev.sunbirded.org', {
     https: true,
     proxyReqPathResolver: function(req) {
         console.log('proxyReqPathResolver ',  urlHelper.parse(req.url).path);
-        var url = urlHelper.parse(req.url).path;
-        url = url.replace('api/framework/v1/read/', '');
-        return url;
+        return urlHelper.parse(req.url).path;
     },
     proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
         console.log('proxyReqOptDecorator')
