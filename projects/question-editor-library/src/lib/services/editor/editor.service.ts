@@ -20,7 +20,7 @@ export class EditorService {
   private _hierarchyConfig: any;
   public questionStream$ = new Subject<any>();
   private _editorMode = 'edit';
-  private _editorConfig: any;
+  private _editorConfig: EditorConfig;
 
 
   constructor(public treeService: TreeService, private dataService: DataService, private toasterService: ToasterService,
@@ -83,7 +83,7 @@ export class EditorService {
         request: {
           data: {
             ...this.prepareQuestionSetHierarchy(),
-            ...{lastUpdatedBy: 'b8d50233-5a4d-4a8c-9686-9c8bccd2c448'}
+            ...{lastUpdatedBy: _.get(this.editorConfig, 'context.user.id')}
           }
         }
       }

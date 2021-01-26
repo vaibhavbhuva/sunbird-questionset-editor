@@ -11,11 +11,8 @@ import { EditorComponent, QuestionComponent, HeaderComponent, TreeComponent, Ans
 import { QumlLibraryModule } from '@project-sunbird/sunbird-quml-player';
 import {CarouselModule} from 'ngx-bootstrap/carousel';
 import { TelemetryInteractDirective } from './directives';
-import { ToasterService } from './services';
-
 
 @NgModule({
-  providers: [ToasterService],
   declarations: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent, HeaderComponent,
   TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent,
   TelemetryInteractDirective],

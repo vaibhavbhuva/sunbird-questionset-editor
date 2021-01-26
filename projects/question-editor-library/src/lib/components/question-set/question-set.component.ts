@@ -23,8 +23,14 @@ export class QuestionSetComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.framework = _.get(this.editorService.editorConfig, 'context.framework');
-    this.fetchFrameWorkDetails();
-    this.prepareFormConfiguration();
+    this.fetchFrameWorkDetails().subscribe((frameworkDetails: any) => {
+      if (frameworkDetails && !frameworkDetails.err) {
+        const frameworkData = frameworkDetails.frameworkdata[this.framework].categories;
+        this.frameworkDetails.frameworkData = frameworkData;
+        this.frameworkDetails.topicList = _.get(_.find(frameworkData, { code: 'topic' }), 'terms');
+        this.prepareFormConfiguration();
+      }
+    });
   }
 
   prepareFormConfiguration() {
@@ -88,14 +94,8 @@ export class QuestionSetComponent implements OnInit, OnDestroy {
   }
 
   fetchFrameWorkDetails() {
-    this.frameworkService.frameworkData$.pipe(takeUntil(this.onComponentDestroy$),
-    filter(data => _.get(data, `frameworkdata.${this.framework}`)), take(1)).subscribe((frameworkDetails: any) => {
-      if (frameworkDetails && !frameworkDetails.err) {
-        const frameworkData = frameworkDetails.frameworkdata[this.framework].categories;
-        this.frameworkDetails.frameworkData = frameworkData;
-        this.frameworkDetails.topicList = _.get(_.find(frameworkData, { code: 'topic' }), 'terms');
-      }
-    });
+    return this.frameworkService.frameworkData$.pipe(takeUntil(this.onComponentDestroy$),
+    filter(data => _.get(data, `frameworkdata.${this.framework}`)), take(1));
   }
 
   addQuestion() {

@@ -4,7 +4,9 @@ declare const iziToast: any;
  * Service to show toaster
  *
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ToasterService {
 
   /**

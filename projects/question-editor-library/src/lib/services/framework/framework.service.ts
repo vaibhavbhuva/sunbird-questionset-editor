@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ServerResponse, Framework, FrameworkData } from '../../interfaces';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { skipWhile, mergeMap } from 'rxjs/operators';
+import { skipWhile } from 'rxjs/operators';
 import * as _ from 'lodash-es';
 import { DataService } from '../../services';
 

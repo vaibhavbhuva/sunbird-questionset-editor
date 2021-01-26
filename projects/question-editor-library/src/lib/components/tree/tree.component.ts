@@ -78,6 +78,9 @@ export class TreeComponent implements OnInit, AfterViewInit {
     if (this.options.showConnectors) {
       $('.fancytree-container').addClass('fancytree-connectors');
     }
+    setTimeout(() => {
+      this.treeService.reloadTree(this.rootNode);
+    }, 0);
     this.treeService.setActiveNode();
   }
 

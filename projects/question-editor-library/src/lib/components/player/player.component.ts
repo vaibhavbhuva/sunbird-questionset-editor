@@ -22,8 +22,10 @@ export class PlayerComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.questionMetaData = _.get(this.questionMetaData, 'data.metadata');
-    this.showPlayerPreview = false;
-    this.initialize();
+    if (this.questionId !== _.get(this.questionMetaData, 'identifier')) {
+      this.showPlayerPreview = false;
+      this.initialize();
+    }
   }
 
   initialize() {

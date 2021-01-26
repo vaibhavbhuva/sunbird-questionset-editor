@@ -31,7 +31,7 @@
   </lib-template>
 
 
-  <sui-modal [mustScroll]="false" [isClosable]="true" [transitionDuration]="0" [size]="'normal'" class="sb-modal"
+<sui-modal [mustScroll]="false" [isClosable]="true" [transitionDuration]="0" [size]="'normal'" class="sb-modal overflow-modal"
     appBodyScroll *ngIf='showConfirmPopup' (dismissed)="showConfirmPopup = !showConfirmPopup; terms = false;">
     <div class="sb-modal-header">
       Accepting Terms & Conditions
@@ -62,7 +62,7 @@
         Submit 
       </button>
     </div>
-  </sui-modal>
+</sui-modal>
 </ng-container>
 
 <ng-container *ngIf="showQuestionView">

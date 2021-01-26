@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { EditorConfig } from '../../question-editor-library-interface';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
 import { EditorService, TreeService, EditorTelemetryService, HelperService, FrameworkService, ToasterService } from '../../services';
@@ -30,8 +30,8 @@ export class EditorComponent implements OnInit {
   public telemetryPageId = 'question_set';
 
   constructor(private editorService: EditorService, private treeService: TreeService, private helperService: HelperService,
-              public telemetryService: EditorTelemetryService,  private cdr: ChangeDetectorRef,
-              private frameworkService: FrameworkService, private toasterService: ToasterService) {}
+              public telemetryService: EditorTelemetryService, private frameworkService: FrameworkService,
+              private toasterService: ToasterService) {}
 
   ngOnInit() {
     this.editorService.initialize(this.editorConfig);
@@ -42,7 +42,7 @@ export class EditorComponent implements OnInit {
     this.collectionId = _.get(this.editorConfig, 'context.identifier');
     this.telemetryService.initializeTelemetry(this.editorConfig);
     this.telemetryService.telemetryPageId = this.telemetryPageId;
-    this.fetchQuestionSetHierarchy();
+    this.initialize();
     this.helperService.initialize(_.get(this.editorConfig, 'context.defaultLicense'));
     this.frameworkService.initialize(_.get(this.editorConfig, 'context.framework'));
     this.telemetryService.start({type: 'editor', pageid: this.telemetryPageId});
@@ -57,14 +57,8 @@ export class EditorComponent implements OnInit {
     };
     this.telemetryService.end(telemetryEnd);
   }
-
-  fetchQuestionSetHierarchy() {
-    this.editorService.getQuestionSetHierarchy(this.collectionId).pipe(catchError(error => {
-      const errInfo = {
-        errorMsg: 'Fetching question set details failed. Please try again...',
-      };
-      return throwError(this.editorService.apiErrorHandling(error, errInfo));
-    })).subscribe(res => {
+  initialize() {
+    this.fetchQuestionSetHierarchy().subscribe(res => {
       if (_.isUndefined(this.editorService.hierarchyConfig)) {
         // tslint:disable-next-line:max-line-length
         this.editorService.getCategoryDefinition(res.primaryCategory, null, this.rootObject).pipe(catchError(error => {
@@ -89,13 +83,23 @@ export class EditorComponent implements OnInit {
       } else {
         this.templateList = this.editorService.hierarchyConfig.children[this.childObject];
       }
+    });
+  }
+
+
+  fetchQuestionSetHierarchy() {
+    return this.editorService.getQuestionSetHierarchy(this.collectionId).pipe(catchError(error => {
+      const errInfo = {
+        errorMsg: 'Fetching question set details failed. Please try again...',
+      };
+      return throwError(this.editorService.apiErrorHandling(error, errInfo));
+    }), tap( res => {
       this.toolbarConfig.title = res.name;
       this.collectionTreeNodes = res;
-      this.cdr.detectChanges();
       if (_.isEmpty(res.children)) {
           // this.hideButton('submitCollection'); TODO: Hide submit collection button if children empty
       }
-    });
+    }));
   }
 
   toolbarEventListener(event) {
@@ -252,6 +256,9 @@ export class EditorComponent implements OnInit {
   questionEventListener(event: any) {
     this.toolbarConfig.view = 'question_set';
     this.telemetryService.telemetryPageId = this.telemetryPageId;
-    this.showQuestionView = event.status;
+    this.selectedQuestionData = undefined;
+    this.fetchQuestionSetHierarchy().subscribe((res: any) => {
+      this.showQuestionView = event.status;
+    });
   }
 }

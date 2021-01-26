@@ -61,6 +61,7 @@ export class TreeService {
     this.setNodeTitle(metadata.name);
     const activeNode = this.getActiveNode();
     const nodeId = activeNode.data.id;
+    // if (activeNode.data.root === false) { return false; } // TODO:: rethink this
     if (_.isUndefined(this.treeCache.nodesModified[nodeId])) {
       this.treeCache.nodesModified[nodeId] = { isNew: false, root: true };
     }
@@ -95,6 +96,11 @@ export class TreeService {
   removeNode() {
     const selectedNode = this.getActiveNode();
     selectedNode.remove();
+    this.setActiveNode();
+  }
+
+  reloadTree(nodes: any) {
+    this.getTreeObject().reload(nodes);
     this.setActiveNode();
   }
 

@@ -21,9 +21,11 @@
     "katex": "^0.12.0",
     "ngx-bootstrap": "^5.6.2",
     "@project-sunbird/sb-styles": "0.0.7",
-    "@project-sunbird/telemetry-sdk": "0.0.26"
+    "@project-sunbird/telemetry-sdk": "0.0.26",
+    "ngx-infinite-scroll": "^6.0.0",
+    "v-sb-semantic-ui": "0.0.1-alpha.1"
   },
   "dependencies": {
-    "v-dynamic-forms": "0.0.1-beta.25"
+    "v-dynamic-forms": "0.0.1-beta.30"
   }
 }
