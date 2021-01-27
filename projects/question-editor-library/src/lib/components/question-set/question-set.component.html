@@ -1,6 +1,6 @@
 <div class="">
   <div class="form-container" *ngIf="showEditMetaForm">
-    <sb-dynamic-form [config]="formFieldProperties" (initialize)="output($event)" (statusChanges)="onStatusChanges($event)" (valueChanges)="valueChanges($event)"></sb-dynamic-form>
+    <!-- <sb-dynamic-form [config]="formFieldProperties" (initialize)="output($event)" (statusChanges)="onStatusChanges($event)" (valueChanges)="valueChanges($event)"></sb-dynamic-form> -->
   </div>
   <div class="sb-fixed-with-whitebg py-10" *ngIf="(editorService.editorMode !== 'review')">
     <div class="ui">

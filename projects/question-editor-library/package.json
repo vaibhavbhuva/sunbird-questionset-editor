@@ -6,7 +6,6 @@
     "@angular/core": "^7.2.0",
     "lodash-es": "^4.17.20",
     "angular2-uuid": "^1.1.1",
-    "ng2-semantic-ui": "github:project-sunbird/ng2-semantic-ui",
     "fine-uploader": "^5.15.7",
     "@ckeditor/ckeditor5-build-classic": "^12.1.0",
     "@ckeditor/ckeditor5-core": "^11.1.0",
@@ -26,6 +25,5 @@
     "v-sb-semantic-ui": "0.0.1-alpha.1"
   },
   "dependencies": {
-    "v-dynamic-forms": "0.0.1-beta.30"
   }
 }
