@@ -31,7 +31,7 @@
         <i *ngIf="toolbarConfig.save_collection_btn_icon" class="{{toolbarConfig.save_collection_btn_icon}}"></i>
         {{ toolbarConfig.save_collection_btn_label}}
       </button>
-      <button class="sb-btn sb-btn-normal sb-btn-primary" (click)="buttonEmitter($event, {type: 'submitCollection'})"
+      <button class="sb-btn sb-btn-normal sb-btn-primary" *ngIf="toolbarConfig.showSubmitBtn" (click)="buttonEmitter($event, {type: 'submitCollection'})"
         libTelemetryInteract
         [telemetryInteractEdata]="telemetryService.getTelemetryInteractEdata('submit','click','submit', telemetryService.telemetryPageId)">
         <i *ngIf="toolbarConfig.submit_collection_btn_icon" class="{{toolbarConfig.submit_collection_btn_icon}}"></i>

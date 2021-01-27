@@ -53,8 +53,7 @@ export class EditorTelemetryService {
             host: config.context.host || '',
             endpoint: config.context.endpoint || '/data/v3/telemetry',
             tags: config.context.tags,
-            cdata: _.merge(this.context.cdata, [{ id: this.contentSessionId, type: 'ContentSession' },
-            { id: this.playSessionId, type: 'PlaySession' }])
+            cdata: this.context.cdata || []
           },
           userOrgDetails: {}
         }
@@ -132,8 +131,7 @@ export class EditorTelemetryService {
         env: this.env,
         sid: this.sid,
         uid: this.uid,
-        cdata: _.merge(this.context.cdata, [{ id: this.contentSessionId, type: 'ContentSession' },
-            { id: this.playSessionId, type: 'PlaySession' }]),
+        cdata: this.context.cdata || [],
         rollup: this.rollup || {}
       }
     });

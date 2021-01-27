@@ -347,8 +347,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     let metadata: any = {
       mimeType: 'application/vnd.sunbird.question',
       media: this.mediaArr,
-      editorState: {},
-      ..._.pick(this.questionSetHierarchy, ['board', 'medium', 'gradeLevel', 'subject', 'topic', 'author'])
+      editorState: {}
     };
     metadata = _.assign(metadata, this.editorState);
     metadata.editorState.question = metadata.question;
@@ -380,8 +379,21 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     return questionBody;
   }
 
+  getDefaultFrameworkValues() {
+    return _.omitBy(_.merge(
+      {
+        author: _.get(this.editorService.editorConfig, 'context.user.name'),
+        ..._.pick(_.get(this.editorService.editorConfig, 'context'), ['board', 'medium', 'gradeLevel', 'subject', 'topic'])
+      },
+      {
+      ..._.pick(this.questionSetHierarchy, ['board', 'medium', 'gradeLevel', 'subject', 'topic', 'author', 'framework'])
+      }
+    ), key => _.isEmpty(key));
+  }
+
   createQuestion() {
-    const metadata = this.prepareRequestBody();
+    let metadata = this.prepareRequestBody();
+    metadata = _.merge(metadata, this.getDefaultFrameworkValues());
     this.questionService.updateHierarchyQuestionCreate(this.questionSetId, metadata, this.questionSetHierarchy).
       subscribe((response: ServerResponse) => {
           if (response.result) {

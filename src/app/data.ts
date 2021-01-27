@@ -67,6 +67,11 @@ export const Config = {
     env: 'questionSetLibrary',
     framework: 'ekstep_ncert_k-12',
     aws_s3_urls : ['https://s3.ap-south-1.amazonaws.com/ekstep-public-qa/', 'https://ekstep-public-qa.s3-ap-south-1.amazonaws.com/',
-    'https://dockstorage.blob.core.windows.net/sunbird-content-dock/']
+    'https://dockstorage.blob.core.windows.net/sunbird-content-dock/'],
+    board: 'CBSE',
+    medium: ['English'],
+    gradeLevel: ['Class 1'],
+    subject: ['Environmental Studies'],
+    topic: ['Hello']
   }
 };

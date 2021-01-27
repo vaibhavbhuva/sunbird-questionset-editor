@@ -92,7 +92,9 @@ export class EditorComponent implements OnInit, OnDestroy {
       this.toolbarConfig.title = res.name;
       this.collectionTreeNodes = res;
       if (_.isEmpty(res.children)) {
-          // this.hideButton('submitCollection'); TODO: Hide submit collection button if children empty
+        this.toolbarConfig.showSubmitBtn = false;
+      } else {
+        this.toolbarConfig.showSubmitBtn = true;
       }
     }));
   }
