@@ -100,7 +100,7 @@ export class TreeComponent implements OnInit, AfterViewInit {
         // $(this.tree.nativeElement).fancytree('getTree').getNodeByKey('_2').setActive();
       },
       click: (event, data): boolean => {
-        this.telemetryService.interact({ edata: this.getTelemetryInteractEdata()});
+        this.telemetryService.interact({ edata: this.getTelemetryInteractEdata()}); // TODO: Add -> activate method
         this.tree.nativeElement.click();
         const node = data.node;
         this.treeEventEmitter.emit({ type: 'nodeSelect', data: node });

@@ -8,3 +8,4 @@ export * from './question/question.component';
 export * from './question-set/question-set.component';
 export * from './template/template.component';
 export * from './tree/tree.component';
+export * from './library/library.component';

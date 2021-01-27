@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, HostListener } from '@angular/core';
 import { EditorConfig } from '../../question-editor-library-interface';
 import { catchError, map, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -10,53 +10,48 @@ import { EditorService, TreeService, EditorTelemetryService, HelperService, Fram
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, OnDestroy {
   @Input() editorConfig: EditorConfig | undefined;
   public toolbarConfig: any;
   public templateList: any;
   public collectionTreeNodes: any;
   public selectedQuestionData: any = {};
   public questionComponentInput: any = {};
+  public libraryComponentInput: any = {};
   public showQuestionTemplatePopup = false;
   public showConfirmPopup = false;
   public submitFormStatus = false;
-  public showQuestionView = false;
   public terms = false;
   public collectionId;
   public pageStartTime;
   public editorMode;
   public rootObject = 'QuestionSet';
   public childObject = 'Question';
-  public telemetryPageId = 'question_set';
+  public pageId = 'question_set';
 
   constructor(private editorService: EditorService, private treeService: TreeService, private helperService: HelperService,
               public telemetryService: EditorTelemetryService, private frameworkService: FrameworkService,
               private toasterService: ToasterService) {}
 
+  @HostListener('window:unload', ['$event'])
+  unloadHandler(event) {
+    this.generateTelemetryEndEvent();
+  }
+
   ngOnInit() {
     this.editorService.initialize(this.editorConfig);
     this.editorMode = this.editorService.editorMode;
     this.toolbarConfig = this.editorService.getToolbarConfig();
-    this.toolbarConfig.view = 'question_set';
     this.pageStartTime = Date.now();
     this.collectionId = _.get(this.editorConfig, 'context.identifier');
     this.telemetryService.initializeTelemetry(this.editorConfig);
-    this.telemetryService.telemetryPageId = this.telemetryPageId;
-    this.initialize();
+    this.telemetryService.telemetryPageId = this.pageId;
     this.helperService.initialize(_.get(this.editorConfig, 'context.defaultLicense'));
     this.frameworkService.initialize(_.get(this.editorConfig, 'context.framework'));
-    this.telemetryService.start({type: 'editor', pageid: this.telemetryPageId});
+    this.telemetryService.start({type: 'editor', pageid: this.telemetryService.telemetryPageId});
+    this.initialize();
   }
 
-  generateTelemetryEndEvent(eventMode) {
-    const telemetryEnd = {
-        type: 'editor',
-        pageid: this.telemetryPageId,
-        mode: eventMode || '',
-        duration: _.toString((Date.now() - this.pageStartTime) / 1000)
-    };
-    this.telemetryService.end(telemetryEnd);
-  }
   initialize() {
     this.fetchQuestionSetHierarchy().subscribe(res => {
       if (_.isUndefined(this.editorService.hierarchyConfig)) {
@@ -111,7 +106,6 @@ export class EditorComponent implements OnInit {
         this.submitHandler();
         break;
       case 'removeContent':
-        this.generateTelemetryEndEvent('remove_content');
         this.removeNode();
         break;
       case 'editContent':
@@ -128,6 +122,9 @@ export class EditorComponent implements OnInit {
         break;
       case 'rejectCollection':
         this.rejectCollection();
+        break;
+      case 'addFromLibrary':
+        this.showLibraryComponentPage();
         break;
       default:
         break;
@@ -175,7 +172,6 @@ export class EditorComponent implements OnInit {
       return throwError(this.editorService.apiErrorHandling(error, errInfo));
     })).subscribe(res => {
       this.showConfirmPopup = false;
-      this.generateTelemetryEndEvent('submit');
       this.toasterService.success('Question set published successfully');
     });
   }
@@ -188,7 +184,6 @@ export class EditorComponent implements OnInit {
       return throwError(this.editorService.apiErrorHandling(error, errInfo));
     })).subscribe(res => {
       this.showConfirmPopup = false;
-      this.generateTelemetryEndEvent('submit');
       this.toasterService.success('Question set rejected successfully');
     });
   }
@@ -250,15 +245,41 @@ export class EditorComponent implements OnInit {
       questionId: mode === 'edit' ? this.selectedQuestionData.data.metadata.identifier : undefined,
       type: interactionType
     };
-    this.showQuestionView = true;
+    this.pageId = 'question';
   }
 
   questionEventListener(event: any) {
-    this.toolbarConfig.view = 'question_set';
-    this.telemetryService.telemetryPageId = this.telemetryPageId;
     this.selectedQuestionData = undefined;
     this.fetchQuestionSetHierarchy().subscribe((res: any) => {
-      this.showQuestionView = event.status;
+      this.pageId = 'question_set';
+      this.telemetryService.telemetryPageId = this.pageId;
     });
   }
+
+  showLibraryComponentPage() {
+    this.libraryComponentInput = {
+      questionSetId: this.collectionId
+    };
+    this.pageId = 'library';
+  }
+
+  libraryEventListener(event: any) {
+    this.pageId = 'question_set';
+    this.telemetryService.telemetryPageId = this.pageId;
+  }
+
+  generateTelemetryEndEvent() {
+    const telemetryEnd = {
+        type: 'editor',
+        pageid: this.telemetryService.telemetryPageId,
+        duration: _.toString((Date.now() - this.pageStartTime) / 1000),
+        mode: this.editorMode
+    };
+    this.telemetryService.end(telemetryEnd);
+  }
+
+  ngOnDestroy() {
+    this.generateTelemetryEndEvent();
+  }
+
 }

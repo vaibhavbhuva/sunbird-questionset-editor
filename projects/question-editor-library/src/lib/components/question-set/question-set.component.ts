@@ -102,6 +102,10 @@ export class QuestionSetComponent implements OnInit, OnDestroy {
     this.toolbarEmitter.emit({ button: { type: 'showQuestionTemplate' } });
   }
 
+  addFromLibrary() {
+    this.toolbarEmitter.emit({ button: { type: 'addFromLibrary' } });
+  }
+
   output(event) {}
 
   onStatusChanges(event) {

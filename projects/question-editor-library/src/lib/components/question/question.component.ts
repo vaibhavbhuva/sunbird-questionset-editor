@@ -1,17 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, AfterViewInit } from '@angular/core';
 import * as _ from 'lodash-es';
 import { UUID } from 'angular2-uuid';
 import { questionEditorConfig } from '../../editor.config';
 import { McqForm, ServerResponse } from '../../interfaces';
 import { EditorService, QuestionService, PlayerService, EditorTelemetryService, ToasterService } from '../../services';
 import { throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'lib-question',
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.scss']
 })
-export class QuestionComponent implements OnInit {
+export class QuestionComponent implements OnInit, AfterViewInit {
   QumlPlayerConfig: any = {};
   @Input() questionInput: any;
   @Output() questionEmitter = new EventEmitter<any>();
@@ -49,13 +50,15 @@ export class QuestionComponent implements OnInit {
   showConfirmPopup = false;
   validQuestionData = false;
   questionPrimaryCategory: string;
-  telemetryPageId: 'question';
+  pageId = 'question';
+  pageStartTime: any;
 
   constructor(
     private questionService: QuestionService, private editorService: EditorService, public telemetryService: EditorTelemetryService,
-    public playerService: PlayerService, private toasterService: ToasterService ) {
+    public playerService: PlayerService, private toasterService: ToasterService, private router: Router ) {
       const { primaryCategory } = this.editorService.selectedChildren;
       this.questionPrimaryCategory = primaryCategory;
+      this.pageStartTime = Date.now();
    }
 
   ngOnInit() {
@@ -64,11 +67,17 @@ export class QuestionComponent implements OnInit {
     this.questionId = questionId;
     this.questionSetId = questionSetId;
     this.toolbarConfig = this.editorService.getToolbarConfig();
-    this.toolbarConfig.view = 'question';
     this.toolbarConfig.showPreview = false;
     this.solutionUUID = UUID.UUID();
-    this.telemetryService.telemetryPageId = this.telemetryPageId;
+    this.telemetryService.telemetryPageId = this.pageId;
     this.initialize();
+  }
+
+  ngAfterViewInit() {
+    this.telemetryService.impression({
+      type: 'edit', pageid: this.telemetryService.telemetryPageId, uri: this.router.url,
+      duration: _.toString((Date.now() - this.pageStartTime) / 1000)
+    });
   }
 
   initialize() {

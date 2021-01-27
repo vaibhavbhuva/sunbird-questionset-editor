@@ -7,6 +7,7 @@ import { EditorTelemetryService, EditorService } from '../../services';
 })
 export class HeaderComponent implements OnInit {
   @Input() toolbarConfig: any;
+  @Input() pageId: any;
   @Output() toolbarEmitter = new EventEmitter<any>();
   public preview = false;
 
