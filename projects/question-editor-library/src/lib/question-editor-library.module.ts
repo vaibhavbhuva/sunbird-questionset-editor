@@ -12,12 +12,17 @@ import { EditorComponent, QuestionComponent, HeaderComponent, TreeComponent, Ans
 import { QumlLibraryModule } from '@project-sunbird/sunbird-quml-player';
 import {CarouselModule} from 'ngx-bootstrap/carousel';
 import { TelemetryInteractDirective } from './directives';
+import { LibraryPlayerComponent , LibraryListComponent, LibraryFilterComponent} from './components';
+
 
 @NgModule({
   declarations: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent, HeaderComponent,
   TreeComponent, AnswerComponent, OptionsComponent, QuestionSetComponent, PlayerComponent, TemplateComponent, CkeditorToolComponent,
   TelemetryInteractDirective,
-  LibraryComponent],
+  LibraryComponent,
+  LibraryPlayerComponent,
+  LibraryListComponent,
+  LibraryFilterComponent],
   imports: [
     CommonModule, FormsModule, RouterModule.forChild([]), CommonFormElementsModule, InfiniteScrollModule,
     HttpClientModule, SuiModalModule, SuiDropdownModule, SuiTabsModule, SuiPopupModule,  QumlLibraryModule, CarouselModule.forRoot()
