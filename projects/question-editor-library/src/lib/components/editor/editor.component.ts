@@ -1,5 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, HostListener } from '@angular/core';
-import { EditorConfig } from '../../question-editor-library-interface';
+import { Component, OnInit, Input, OnDestroy, HostListener, Output, EventEmitter } from '@angular/core';import { EditorConfig } from '../../question-editor-library-interface';
 import { catchError, map, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
@@ -12,6 +11,7 @@ import { EditorService, TreeService, EditorTelemetryService, HelperService, Fram
 })
 export class EditorComponent implements OnInit, OnDestroy {
   @Input() editorConfig: EditorConfig | undefined;
+  @Output() editorEmitter = new EventEmitter<any>();
   public toolbarConfig: any;
   public templateList: any;
   public collectionTreeNodes: any;
@@ -101,6 +101,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   toolbarEventListener(event) {
     switch (event.button.type) {
+      case 'backContent':
+        this.editorEmitter.emit({close: true, library: 'question_set_editor'});
+        break;
       case 'saveCollection':
         this.saveCollection();
         break;

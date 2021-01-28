@@ -8,4 +8,9 @@ import { Config } from './data';
 export class AppComponent {
   title = 'sunbird-questionset-editor';
   editorConfig = Config;
+
+  editorEventListener(event) {
+    console.log(event);
+  }
+
 }
