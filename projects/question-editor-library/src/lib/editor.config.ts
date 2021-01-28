@@ -385,14 +385,14 @@ export const formConfig = [
       visible: true
   },
   {
-      code: 'showQuestions',
+      code: 'maxQuestions',
       dataType: 'text',
       description: 'Show Questions',
       editable: true,
       index: 5,
       inputType: 'select',
       label: 'Show Questions',
-      name: 'showQuestions',
+      name: 'maxQuestions',
       placeholder: 'Show Questions',
       renderingHints: {class: 'sb-g-col-lg-1'},
       required: false,
