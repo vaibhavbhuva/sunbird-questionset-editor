@@ -31,6 +31,7 @@ export class LibraryFilterComponent implements OnInit {
       contentType: [this.activeFilterData.contentType],
       subject: [this.activeFilterData.subject],
       gradeLevel: [this.activeFilterData.gradeLevel],
+      medium: [this.activeFilterData.medium],
       chapter: [this.activeFilterData.chapter ? this.activeFilterData.chapter : []],
     });
     this.isFilterShow = true;
