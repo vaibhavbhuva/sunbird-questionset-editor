@@ -10,7 +10,7 @@ import { EditorTelemetryService } from '../../services';
 export class TemplateComponent implements OnInit, OnDestroy {
 
   @Input() templateList: any;
-  @ViewChild('modal') private modal;
+  @ViewChild('modal', {static: false}) private modal;
   @Output() templateSelection = new EventEmitter<any>();
   public showButton = false;
   public templateSelected;

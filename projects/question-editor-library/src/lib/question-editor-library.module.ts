@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-// import { CommonFormElementsModule } from 'v-dynamic-forms';
+import { CommonFormElementsModule } from 'v-dynamic-forms';
 import { SuiModalModule, SuiDropdownModule, SuiTabsModule, SuiPopupModule } from 'v-sb-semantic-ui';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HttpClientModule } from '@angular/common/http';
@@ -19,7 +19,7 @@ import { TelemetryInteractDirective } from './directives';
   TelemetryInteractDirective,
   LibraryComponent],
   imports: [
-    CommonModule, FormsModule, RouterModule.forChild([]), InfiniteScrollModule,
+    CommonModule, FormsModule, RouterModule.forChild([]), CommonFormElementsModule, InfiniteScrollModule,
     HttpClientModule, SuiModalModule, SuiDropdownModule, SuiTabsModule, SuiPopupModule,  QumlLibraryModule, CarouselModule.forRoot()
   ],
   exports: [QuestionEditorLibraryComponent, EditorComponent, QuestionComponent]

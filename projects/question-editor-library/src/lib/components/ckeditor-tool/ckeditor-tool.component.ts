@@ -15,8 +15,8 @@ import MathText from '../../../../../../src/assets/libs/mathEquation/plugin/math
   styleUrls: ['./ckeditor-tool.component.scss']
 })
 export class CkeditorToolComponent implements OnInit, AfterViewInit, OnChanges {
-  @ViewChild('editor') public editorRef: ElementRef;
-  @ViewChild('fineUploaderUI') fineUploaderUI: ElementRef;
+  @ViewChild('editor', {static: false}) public editorRef: ElementRef;
+  @ViewChild('fineUploaderUI', {static: false}) fineUploaderUI: ElementRef;
   @Input() editorConfig: any;
   @Input() editorDataInput: any;
   @Input() editorId: any;

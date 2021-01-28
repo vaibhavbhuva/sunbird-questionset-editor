@@ -12,7 +12,7 @@ declare var $: any;
   styleUrls: ['./tree.component.scss']
 })
 export class TreeComponent implements OnInit, AfterViewInit {
-  @ViewChild('fancyTree') public tree: ElementRef;
+  @ViewChild('fancyTree', {static: false}) public tree: ElementRef;
   @Input() public nodes: any;
   @Input() public options: any;
   @Output() public treeEventEmitter: EventEmitter<any> = new EventEmitter();
