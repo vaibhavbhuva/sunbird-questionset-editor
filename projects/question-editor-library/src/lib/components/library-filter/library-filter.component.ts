@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./library-filter.component.scss']
 })
 export class LibraryFilterComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit() {
