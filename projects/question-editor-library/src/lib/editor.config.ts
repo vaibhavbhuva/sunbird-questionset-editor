@@ -38,7 +38,7 @@ export const editorConfig = {
             type: 'Question',
             label: 'Question',
             isRoot: false,
-            editable: true,
+            editable: false,
             childrenTypes: [],
             addType: 'Editor',
             iconClass: 'fa fa-file-o'
@@ -386,7 +386,7 @@ export const formConfig = [
   },
   {
       code: 'maxQuestions',
-      dataType: 'text',
+      dataType: 'list',
       description: 'Show Questions',
       editable: true,
       index: 5,
