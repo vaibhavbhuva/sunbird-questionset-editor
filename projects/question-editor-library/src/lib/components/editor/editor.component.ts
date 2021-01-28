@@ -20,7 +20,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   public libraryComponentInput: any = {};
   public showQuestionTemplatePopup = false;
   public showConfirmPopup = false;
-  public submitFormStatus = false;
+  public submitFormStatus = true;
   public terms = false;
   public collectionId;
   public pageStartTime;
@@ -134,6 +134,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   saveCollection() {
+    if(!this.validateFormStatus()) { return false; }
     this.editorService.updateQuestionSetHierarchy().pipe(catchError(error => {
         const errInfo = {
           errorMsg: 'Saving question set details failed. Please try again...',
@@ -147,11 +148,17 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   submitHandler() {
+    if (this.validateFormStatus()) {
+      this.showConfirmPopup = true;
+    }
+  }
+
+  validateFormStatus() {
     if (!this.submitFormStatus) {
       this.toasterService.error('Please fill the required metadata');
       return false;
     }
-    this.showConfirmPopup = true;
+    return true;
   }
 
   submitCollection() {

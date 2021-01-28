@@ -43,7 +43,7 @@ export class OptionsComponent implements OnInit {
     });
     metadata = {
       templateId: this.templateType,
-      name: 'Multiple Choice',
+      name: 'Multiple Choice Question',
       responseDeclaration: this.getResponseDeclaration(editorState),
       interactionTypes: ['choice'],
       interactions: this.getInteractions(editorState.options),

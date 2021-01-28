@@ -26,7 +26,7 @@ export class AnswerComponent implements OnInit {
       editorState: {
         answer: event.body
       },
-      name: 'Subjective',
+      name: 'Subjective Question',
       qType: 'SA',
       primaryCategory: 'Subjective Question'
     };
