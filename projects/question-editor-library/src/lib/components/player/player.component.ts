@@ -47,8 +47,8 @@ export class PlayerComponent implements OnInit, OnChanges {
     this.QumlPlayerConfig = playerConfig;
     this.QumlPlayerConfig.data = _.cloneDeep(this.questionSetHierarchy);
     this.QumlPlayerConfig.data.totalQuestions = 1;
-    this.QumlPlayerConfig.data.maxQuestions = this.QumlPlayerConfig.data.totalQuestions;
-    this.QumlPlayerConfig.data.maxScore = this.QumlPlayerConfig.data.totalQuestions;
+    this.QumlPlayerConfig.data.maxQuestions = this.QumlPlayerConfig.data.maxQuestions || this.QumlPlayerConfig.data.totalQuestions;
+    this.QumlPlayerConfig.data.maxScore = this.QumlPlayerConfig.data.maxQuestions;
     this.QumlPlayerConfig.data.children = [];
     this.QumlPlayerConfig.data.children.push(questionData);
   }
