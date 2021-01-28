@@ -386,7 +386,7 @@ export const formConfig = [
   },
   {
       code: 'maxQuestions',
-      dataType: 'text',
+      dataType: 'list',
       description: 'Show Questions',
       editable: true,
       index: 5,
