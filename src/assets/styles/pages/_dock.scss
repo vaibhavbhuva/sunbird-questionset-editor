@@ -925,7 +925,12 @@ $progressCircle: xs calculateRem(16px) 4px 10px, sm calculateRem(24px) 6px 10px,
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: 1fr 1fr;
   column-gap: 0.5rem;
+  border-bottom: solid 1px var(--gray-100);
+  &:last-child{
+    border-bottom: none;
+  }
 }
+
 
 .three-column-grid {
   display: grid;
