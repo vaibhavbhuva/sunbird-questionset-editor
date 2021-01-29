@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angu
 import { FormGroup, FormBuilder } from '@angular/forms';
 import * as _ from 'lodash-es';
 import { data } from './data';
+import {labelMessages} from '../labels';
 @Component({
   selector: 'lib-library-filter',
   templateUrl: './library-filter.component.html',
@@ -9,6 +10,7 @@ import { data } from './data';
 })
 export class LibraryFilterComponent implements OnInit {
 
+  labelMessages = labelMessages;
   @Input() sessionContext: any;
   // @Input() filters: any;
   // @Input() activeFilterData: any;
@@ -34,7 +36,6 @@ export class LibraryFilterComponent implements OnInit {
       medium: [this.activeFilterData.medium],
       chapter: [this.activeFilterData.chapter ? this.activeFilterData.chapter : []],
     });
-    this.isFilterShow = true;
   }
 
   showfilter() {

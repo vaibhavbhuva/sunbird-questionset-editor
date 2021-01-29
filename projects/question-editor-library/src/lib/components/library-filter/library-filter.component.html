@@ -7,10 +7,12 @@
             <i class="search icon"></i>
             <input class="sb-search-input" type="text" placeholder="Search Library" />
         </div>
-        <button class="sb-btn sb-btn-normal">Search</button>
+        <button class="sb-btn sb-btn-normal">{{labelMessages.lbl.search}}</button>
       </div>
       <div class="fs-0-785 cursor-pointer pr-20 font-weight-bold" (click)="showfilter()">
-        what kind of content are you looking for?
+        {{labelMessages.lbl.filterText}}
+        <i *ngIf="isFilterShow" class="caret down icon"></i>
+        <i *ngIf="!isFilterShow" class="caret left icon"></i>
         <i class="icon caret"></i>
       </div>
     </div>
