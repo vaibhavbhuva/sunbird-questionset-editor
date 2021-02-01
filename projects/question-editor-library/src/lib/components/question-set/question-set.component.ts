@@ -59,7 +59,7 @@ export class QuestionSetComponent implements OnInit, OnDestroy {
     const metadata = (_.isUndefined(this.treeService.treeCache.nodesModified[questionSetObj.identifier])) ? questionSetObj : _.assign(questionSetObj, this.treeService.treeCache.nodesModified[questionSetObj.identifier].metadata);
 
     _.forEach(this.formFieldProperties, field => {
-      if (metadata && metadata[field.code]) {
+      if (metadata && _.has(metadata, field.code)) {
         field.default = metadata[field.code];
       }
 
@@ -114,6 +114,7 @@ export class QuestionSetComponent implements OnInit, OnDestroy {
   output(event) {}
 
   onStatusChanges(event) {
+    console.log('onStatusChanges::', event);
     this.toolbarEmitter.emit({ button: { type: 'onFormChange' }, event });
   }
 
