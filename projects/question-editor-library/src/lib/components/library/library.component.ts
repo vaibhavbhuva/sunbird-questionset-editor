@@ -20,4 +20,8 @@ export class LibraryComponent implements OnInit {
     this.libraryEmitter.emit({});
   }
 
+  onFilterChange(event: any) {
+    console.log('event', event);
+  }
+
 }

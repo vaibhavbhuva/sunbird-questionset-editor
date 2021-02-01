@@ -1,4 +1,5 @@
-<div class="sb-prominent-filter sb-bg-header-blue">
+
+<div class="sb-prominent-filter sb-bg-header-blue" [formGroup]="searchFilterForm">
   <div class="ui container py-20">
     <div class="d-flex flex-w-wrap flex-jc-space-between flex-ai-center">
       <div class="sb-search-box small no-btn">
@@ -6,89 +7,88 @@
             <i class="search icon"></i>
             <input class="sb-search-input" type="text" placeholder="Search Library" />
         </div>
-        <button class="sb-btn sb-btn-normal">Search</button>
-     </div>
-      <div class="fs-0-785 cursor-pointer pr-20 font-weight-bold" >
-        what kind of content are you looking for?
+        <button class="sb-btn sb-btn-normal">{{labelMessages.lbl.search}}</button>
+      </div>
+      <div class="fs-0-785 cursor-pointer pr-20 font-weight-bold" (click)="showfilter()">
+        {{labelMessages.lbl.filterText}}
+        <i *ngIf="isFilterShow" class="caret down icon"></i>
+        <i *ngIf="!isFilterShow" class="caret left icon"></i>
         <i class="icon caret"></i>
       </div>
     </div>
-    <!-- <div class="sb-prominent-filter-container pt-16" *ngIf="isFilterShow">
+    <div class="sb-prominent-filter-container pt-16" *ngIf="isFilterShow">
       <hr class="mb-20 w-100">
       <div class="sb-prominent-filter-field">
-        <label class="fsmall d-block">Content type
+        <label class="fsmall d-block">Content Type
         </label>
-        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder="{{resourceService.frmelmnts.lbl.selectcontentTypes}}"
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
           formControlName="contentType" #contentTypes [options]="filters.contentType" [isSearchable]='true'
-          >
+        >
             <sui-select-option *ngFor="let contentType of contentTypes.filteredOptions" [value]="contentType"
-           > </sui-select-option>
+            > </sui-select-option>
         </sui-multi-select>
       </div>
-      <div class="sb-prominent-filter-field">
+      <!-- <div class="sb-prominent-filter-field">
         <label class="fsmall d-block">Purpose
         </label>
-        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder="{{resourceService.frmelmnts.lbl.selectClasses}}"
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
           formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel" [isSearchable]='true'
-          appTelemetryInteract
-          [telemetryInteractEdata]="programTelemetryService.getTelemetryInteractEdata('class', configService.telemetryLabels.eventType.select, configService.telemetryLabels.eventSubtype.multiSelect,telemetryPageId)"
-          [telemetryInteractCdata]="sessionContext.telemetryInteractCdata"
-          [telemetryInteractPdata]="sessionContext.telemetryInteractPdata">
+        >
             <sui-select-option *ngFor="let gradeLevel of gradeLevels.filteredOptions" [value]="gradeLevel"
-           > </sui-select-option>
+          > </sui-select-option>
         </sui-multi-select>
-      </div>
-      <div class="sb-prominent-filter-field">
+      </div> -->
+      <!-- <div class="sb-prominent-filter-field">
         <label class="fsmall d-block">Topics
         </label>
-        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder="{{resourceService.frmelmnts.lbl.selectClasses}}"
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
           formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel" [isSearchable]='true'
-         >
+        >
             <sui-select-option *ngFor="let gradeLevel of gradeLevels.filteredOptions" [value]="gradeLevel"
-           > </sui-select-option>
+          > </sui-select-option>
         </sui-multi-select>
-      </div>
-      <div class="sb-prominent-filter-field">
+      </div> -->
+      <!-- <div class="sb-prominent-filter-field">
         <label class="fsmall d-block">Board
         </label>
-        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder="{{resourceService.frmelmnts.lbl.selectClasses}}"
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
           formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel" [isSearchable]='true'
           >
             <sui-select-option *ngFor="let gradeLevel of gradeLevels.filteredOptions" [value]="gradeLevel"
             > </sui-select-option>
         </sui-multi-select>
-      </div>
+      </div> -->
       <div class="sb-prominent-filter-field">
         <label class="fsmall d-block">Classes
         </label>
-        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder="{{resourceService.frmelmnts.lbl.selectClasses}}"
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
           formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel" [isSearchable]='true'
-         >
+        >
             <sui-select-option *ngFor="let gradeLevel of gradeLevels.filteredOptions" [value]="gradeLevel"
-           > </sui-select-option>
+          > </sui-select-option>
         </sui-multi-select>
       </div>
       <div class="sb-prominent-filter-field">
         <label class="fsmall d-block">Medium
         </label>
-        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder="{{resourceService.frmelmnts.lbl.selectClasses}}"
-          formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel">
-            <sui-select-option *ngFor="let gradeLevel of gradeLevels.filteredOptions" [value]="gradeLevel"
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
+          formControlName="medium" #mediums [options]="filters.medium">
+            <sui-select-option *ngFor="let medium of mediums.filteredOptions" [value]="medium"
             > </sui-select-option>
         </sui-multi-select>
       </div>
       <div class="sb-prominent-filter-field">
-        <label class="fsmall d-block">{{resourceService.frmelmnts.lbl.subject}}
+        <label class="fsmall d-block">Subject
         </label>
-        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder="{{resourceService.frmelmnts.lbl.selectSubjects}}"
-          formControlName="subject" #subjects >
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
+          formControlName="subject" #subjects [options]="filters.subject">
             <sui-select-option *ngFor="let subject of subjects.filteredOptions" [value]="subject"> </sui-select-option>
         </sui-multi-select>
       </div>
       <div class="d-flex flex-as-center pt-10 sb-btn-cover">
-        <button type="button" class="sb-btn sb-btn-normal sb-btn-outline-primary ml-5">Reset</button>
-        <button type="button" class="sb-btn sb-btn-normal sb-btn-primary ml-15">Apply</button>
+        <button type="button" class="sb-btn sb-btn-normal sb-btn-outline-primary ml-5" (click)="resetFilter();">Reset</button>
+        <button type="button" class="sb-btn sb-btn-normal sb-btn-primary ml-15" (click)="applyFilter();">Apply</button>
       </div>
-    </div> -->
+    </div>
   </div>
 </div>
