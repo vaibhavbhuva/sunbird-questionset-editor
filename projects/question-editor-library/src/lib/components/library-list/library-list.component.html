@@ -1,27 +1,21 @@
 <div class="sbtoc-container pr-8 mt-20">
   <div class="title sb-color-primary font-weight-bold fs-1">
-    Showing 3 content  
+    Showing (3) content  
   </div>
-  <small class="sb-color-gray-200 d-block pb-10">Select a content to add to the textbook</small>
-  <div class="d-flex flex-w-wrap flex-jc-space-between flex-ai-center mb-15">
+  <div class="d-flex flex-w-wrap flex-jc-space-between flex-ai-baseline mb-15">
     <div>   
-      <!-- <sui-checkbox class="toggle"></sui-checkbox> -->
-        <small class="d-block"> Show content added to textbook</small>
+      <small class="sb-color-gray-200 d-block pb-10">Select a content to add to the textbook</small>
+      <sui-checkbox class="toggle"></sui-checkbox>
+        <small class="d-block mt-5 fs-0785"> Show content added to textbook</small>
     </div>
-      <div>
-        <label class="d-block font-weight-normal">Sort by</label>
-        <!-- <sui-multi-select class="selection"
-                          [(ngModel)]="selectedOptions"
-                          [options]="options"
-                          labelField="name"
-                          [isSearchable]="searchable"
-                          [isDisabled]="disabled"
-                          [hasLabels]="!hideLabels"
+      <div class="sb-w-70">
+        <label class="d-block font-weight-normal fs-0785">Sort By</label>
+        <sui-multi-select class="selection" placeholder="A - Z"
                           #multiSelect>
-            <sui-select-option *ngFor="let option of multiSelect.filteredOptions"
-                               [value]="option">
+            <sui-select-option 
+                               >
             </sui-select-option>
-        </sui-multi-select> -->
+        </sui-multi-select>
     </div>
   
         

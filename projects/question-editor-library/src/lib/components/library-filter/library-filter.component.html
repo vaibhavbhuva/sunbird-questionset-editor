@@ -1,6 +1,6 @@
 
 <div class="sb-prominent-filter sb-bg-header-blue" [formGroup]="searchFilterForm">
-  <div class="ui container py-20">
+  <div class="ui container pt-5 pb-20">
     <div class="d-flex flex-w-wrap flex-jc-space-between flex-ai-center">
       <div class="sb-search-box small no-btn">
         <div class="input-div relative">
@@ -9,17 +9,16 @@
         </div>
         <button class="sb-btn sb-btn-normal">{{labelMessages.lbl.search}}</button>
       </div>
-      <div class="fs-0-785 cursor-pointer pr-20 font-weight-bold" (click)="showfilter()">
+      <div class="fs-0-785 cursor-pointer" (click)="showfilter()">
         {{labelMessages.lbl.filterText}}
-        <i *ngIf="isFilterShow" class="caret down icon"></i>
-        <i *ngIf="!isFilterShow" class="caret left icon"></i>
-        <i class="icon caret"></i>
+        <i *ngIf="isFilterShow" class="caret up icon"></i>
+        <i *ngIf="!isFilterShow" class="caret down icon"></i>
       </div>
     </div>
     <div class="sb-prominent-filter-container pt-16" *ngIf="isFilterShow">
       <hr class="mb-20 w-100">
       <div class="sb-prominent-filter-field">
-        <label class="fsmall d-block">Content Type
+        <label class="fsmall d-block">Content Type(s)
         </label>
         <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
           formControlName="contentType" #contentTypes [options]="filters.contentType" [isSearchable]='true'
@@ -59,7 +58,37 @@
         </sui-multi-select>
       </div> -->
       <div class="sb-prominent-filter-field">
-        <label class="fsmall d-block">Classes
+        <label class="fsmall d-block">Purpose
+        </label>
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
+          formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel" [isSearchable]='true'
+        >
+            <sui-select-option *ngFor="let gradeLevel of gradeLevels.filteredOptions" [value]="gradeLevel"
+          > </sui-select-option>
+        </sui-multi-select>
+      </div>
+      <div class="sb-prominent-filter-field">
+        <label class="fsmall d-block">Topic(s)
+        </label>
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
+          formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel" [isSearchable]='true'
+        >
+            <sui-select-option *ngFor="let gradeLevel of gradeLevels.filteredOptions" [value]="gradeLevel"
+          > </sui-select-option>
+        </sui-multi-select>
+      </div>
+      <div class="sb-prominent-filter-field">
+        <label class="fsmall d-block">Board
+        </label>
+        <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
+          formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel" [isSearchable]='true'
+        >
+            <sui-select-option *ngFor="let gradeLevel of gradeLevels.filteredOptions" [value]="gradeLevel"
+          > </sui-select-option>
+        </sui-multi-select>
+      </div>
+      <div class="sb-prominent-filter-field">
+        <label class="fsmall d-block">Class(es)
         </label>
         <sui-multi-select class="selection sb-select-searchfilter d-block" placeholder=""
           formControlName="gradeLevel" #gradeLevels [options]="filters.gradeLevel" [isSearchable]='true'
