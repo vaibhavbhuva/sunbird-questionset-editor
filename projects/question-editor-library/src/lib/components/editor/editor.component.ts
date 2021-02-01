@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, OnDestroy, HostListener, Output, EventEmitter } from '@angular/core';import { EditorConfig } from '../../question-editor-library-interface';
+import { Component, OnInit, Input, OnDestroy, HostListener, Output, EventEmitter } from '@angular/core';
+import { EditorConfig } from '../../question-editor-library-interface';
 import { catchError, map, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import * as _ from 'lodash-es';
@@ -102,7 +103,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   toolbarEventListener(event) {
     switch (event.button.type) {
       case 'backContent':
-        this.editorEmitter.emit({close: true, library: 'question_set_editor'});
+        this.redirectToChapterListTab();
         break;
       case 'saveCollection':
         this.saveCollection();
@@ -137,7 +138,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   saveCollection() {
-    if(!this.validateFormStatus()) { return false; }
+    if (!this.validateFormStatus()) { return false; }
     this.editorService.updateQuestionSetHierarchy().pipe(catchError(error => {
         const errInfo = {
           errorMsg: 'Saving question set details failed. Please try again...',
@@ -173,6 +174,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     })).subscribe(res => {
       this.showConfirmPopup = false;
       this.toasterService.success('Question set sent for review');
+      this.redirectToChapterListTab();
     });
   }
 
@@ -185,6 +187,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     })).subscribe(res => {
       this.showConfirmPopup = false;
       this.toasterService.success('Question set published successfully');
+      this.redirectToChapterListTab();
     });
   }
 
@@ -197,6 +200,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     })).subscribe(res => {
       this.showConfirmPopup = false;
       this.toasterService.success('Question set rejected successfully');
+      this.redirectToChapterListTab();
     });
   }
 
@@ -288,6 +292,10 @@ export class EditorComponent implements OnInit, OnDestroy {
         mode: this.editorMode
     };
     this.telemetryService.end(telemetryEnd);
+  }
+
+  redirectToChapterListTab() {
+    this.editorEmitter.emit({close: true, library: 'question_set_editor'});
   }
 
   ngOnDestroy() {

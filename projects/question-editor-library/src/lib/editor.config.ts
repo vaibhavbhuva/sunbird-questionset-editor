@@ -113,14 +113,6 @@ export const formConfig = [
       renderingHints: {class: 'sb-g-col-lg-1'},
       required: false,
       visible: true,
-      validations: [{
-          type: 'max',
-          value: '120',
-          message: 'Input is Exceeded'
-      }, {
-          type: 'required',
-          message: 'Title is required'
-      }]
   },
   {
       code: 'keywords',
@@ -138,11 +130,7 @@ export const formConfig = [
       section: {
         index: 1,
         name: ''
-      },
-      validations: [{
-        type: 'required',
-        message: 'Keyword is required'
-      }]
+      }
     },
     {
       code: 'primaryCategory',
@@ -253,11 +241,7 @@ export const formConfig = [
       section: {
         index: 3,
         name: ''
-      },
-      validations: [{
-        type: 'required',
-        message: 'Board is required'
-      }]
+      }
     }, {
       code: 'medium',
       visible: true,
@@ -276,11 +260,7 @@ export const formConfig = [
       section: {
         index: 3,
         name: ''
-      },
-      validations: [{
-        type: 'required',
-        message: 'Medium is required'
-      }]
+      }
     }, {
       code: 'gradeLevel',
       visible: true,
@@ -334,11 +314,7 @@ export const formConfig = [
       inputType: 'topicselector',
       label: 'Topics',
       placeholder: 'Choose Topics',
-      required: false,
-      validations: [{
-        type: 'required',
-        message: 'Topic is required'
-      }]
+      required: false
     },
   {
       code: 'audience',

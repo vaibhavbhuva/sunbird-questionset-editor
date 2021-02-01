@@ -3,8 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonFormElementsModule } from 'v-dynamic-forms';
-import { SuiModalModule, SuiDropdownModule, SuiTabsModule, SuiPopupModule, SuiModule } from 'v-sb-semantic-ui';
-
+import { SuiModule } from 'v-sb-semantic-ui';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HttpClientModule } from '@angular/common/http';
 import { QuestionEditorLibraryComponent } from './question-editor-library.component';
@@ -33,10 +32,6 @@ import { TelemetryInteractDirective } from './directives';
     CommonFormElementsModule,
     InfiniteScrollModule,
     HttpClientModule,
-    SuiModalModule,
-    SuiDropdownModule,
-    SuiTabsModule,
-    SuiPopupModule,
     SuiModule,
     QumlLibraryModule,
     CarouselModule.forRoot()
