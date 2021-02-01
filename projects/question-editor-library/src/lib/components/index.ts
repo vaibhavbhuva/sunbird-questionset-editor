@@ -11,4 +11,4 @@ export * from './tree/tree.component';
 export * from './library/library.component';
 export * from './library-player/library-player.component';
 export * from './library-list/library-list.component';
-export * from './library-filter/library-filter.component'
+export * from './library-filter/library-filter.component';
